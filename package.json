@@ -1,0 +1,89 @@
+{
+  "name": "3kles-corebe",
+  "version": "1.0.0",
+  "description": "3KLES Core BackEnd",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "http://gitlab.3kles.local/corejsteam/3kles-corebe.git"
+  },
+  "keywords": [
+    "3KLES",
+    "Express",
+    "Core",
+    "Router",
+    "Service",
+    "Http"
+  ],
+  "author": "Jeremy Chaut",
+  "license": "ISC",
+  "bugs": {
+    "url": "http://gitlab.3kles.local/corejsteam/3kles-corebe/issues"
+  },
+  "homepage": "http://gitlab.3kles.local/corejsteam/3kles-corebe",
+  "scripts": {
+    "dev": "nodemon --exec ts-node index.ts",
+    "build": "gulp transpile",
+    "prod": "gulp prod"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "compression": "^1.7.2",
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "express-jwt": "^5.3.1",
+    "express-jwt-blacklist": "^1.1.0",
+    "express-validation": "^1.0.2",
+    "fs": "0.0.1-security",
+    "helmet": "^3.12.1",
+    "http": "0.0.0",
+    "joi": "^13.6.0",
+    "jsonwebtoken": "^8.2.1",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.17.1",
+    "path": "^0.12.7",
+    "ts-node": "^5.0.1",
+    "tsc": "^1.20150623.0",
+    "typescript": "^2.7.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.0",
+    "@types/compression": "0.0.36",
+    "@types/del": "^3.0.1",
+    "@types/dotenv": "^4.0.3",
+    "@types/express": "^4.11.1",
+    "@types/express-jwt": "0.0.40",
+    "@types/gulp": "^4.0.5",
+    "@types/gulp-uglify": "^3.0.5",
+    "@types/helmet": "0.0.40",
+    "@types/jsonwebtoken": "^7.2.8",
+    "@types/morgan": "^1.7.35",
+    "@types/node": "^9.4.6",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "babelify": "^10.0.0",
+    "browserify": "^16.2.2",
+    "glob": "^7.1.3",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.4.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-foreach": "^0.1.0",
+    "gulp-mocha": "^6.0.0",
+    "gulp-rename": "^1.4.0",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-tap": "^1.0.1",
+    "gulp-terser": "^1.1.5",
+    "gulp-use-tsconfig": "^1.2.2",
+    "gulp-util": "^3.0.8",
+    "merge-stream": "^1.0.1",
+    "run-sequence": "^2.2.1",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  }
+}
