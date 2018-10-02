@@ -110,7 +110,7 @@ gulp.task('clean-build', () => {
 
 
 // WATCH
-gulp.task('watch', ['build'], () => {
+gulp.task('watch', ['transpile'], () => {
 	return gulp.src(tsConfig)
 		.pipe(useTsConfig.watch());
 });
