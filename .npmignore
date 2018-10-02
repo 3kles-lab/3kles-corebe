@@ -3,7 +3,7 @@ node_modules
 src
 nodemon.json
 index.ts
-gulp.js
+gulpfile.js
 tsconfig.json
 tslint.json
 package-lock.json
