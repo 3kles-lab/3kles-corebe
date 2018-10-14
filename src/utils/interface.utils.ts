@@ -3,6 +3,7 @@ interface IHttpOptions {
 	hostname: string;
 	port: number;
 	path: string;
+	method: string;
 	rejectUnauthorized: boolean;
 	headers: any;
 }

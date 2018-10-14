@@ -25,8 +25,8 @@ export class HttpApi implements IGenericAPI {
 
 	// Function to execute request and manage response
 	public async executeRequest(options: any): Promise<any> {
-
 		return new Promise((resolve, reject) => {
+			this.beforeExecute();
 			// tslint:disable-next-line:typedef
 			function callback(res) {
 				// reject on bad status
@@ -51,11 +51,12 @@ export class HttpApi implements IGenericAPI {
 			}
 			console.log('Options: ', options);
 			if (this.protocol === 'https') {
-				https.get(options, callback.bind(this));
+				https.request(options, callback.bind(this));
 			} else {
-				http.get(options, callback.bind(this));
+				http.request(options, callback.bind(this));
 			}
 		});
+		this.afterExecute();
 	}
 
 	public processResponse(response: any): any {
@@ -65,4 +66,7 @@ export class HttpApi implements IGenericAPI {
 	public processError(error: any): any {
 		return error;
 	}
+
+	public beforeExecute(): void { return; }
+	public afterExecute(): void { return; }
 }

@@ -13,7 +13,6 @@ var rename = require('gulp-rename');
 var browserify = require('browserify');
 var gutil = require('gulp-util');
 var runSequence = require('run-sequence');
-var execouglin = require('gulp-exec');
 var exec = require('child_process').exec;
 var tsConfig = './tsconfig.json';
 
