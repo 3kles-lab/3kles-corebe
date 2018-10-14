@@ -123,7 +123,7 @@ gulp.task('clean-build', () => {
 
 // PUBLISH
 gulp.task('publish', ['transpile'], (cb) => {
-	exec('npm run --force', function (err, stdout, stderr) {
+	exec('npm publish --force', function (err, stdout, stderr) {
 		console.log(stdout);
 		console.log(stderr);
 		cb(err);
