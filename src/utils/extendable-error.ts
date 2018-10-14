@@ -1,4 +1,5 @@
 export class ExtendableError extends Error {
+	public message: string;
 	public status: number;
 	public context: any;
 

@@ -27,29 +27,20 @@ export abstract class AbstractGenericApp implements IGenericApp {
 
 	public abstract initError(): void;
 
-	public startApp(port: number): void {
-		this.app.listen(port, () => {
-			console.log('Service Generic listening on port ' + port);
-		});
+	public startApp(port?: number): void {
+		let appPort: number = Number(process.env.PORT);
+		if (port) {
+			appPort = port;
+		}
+		if (appPort) {
+			this.app.listen(appPort || 3000, () => {
+				console.log('Service Generic listening on port ' + port);
+			});
+		}
 	}
 
 	public getApp(): express.Application {
 		return this.app;
-	}
-
-	protected addRoute(router: express.Router, middleware?: any): void {
-		if (middleware) {
-			this.app.use('/' + middleware, router);
-		} else {
-			this.app.use('/', router);
-			const routes = [];
-			router.stack.forEach((m: any) => {
-				if (m.route) {
-					routes.push(Object.keys(m.route.methods) + " -> " + m.route.path);
-				}
-			});
-			console.log('Route for ', middleware, ' :', JSON.stringify(routes, null, 4));
-		}
 	}
 
 }

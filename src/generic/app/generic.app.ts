@@ -12,7 +12,7 @@ import { AbstractGenericRouter } from '../../index';
 export class GenericApp extends AbstractGenericApp {
 	protected router: AbstractGenericRouter;
 	// constructor(public router: AbstractGenericRouter, port: number, private middleware?: string) {
-	constructor(private middleware?: string) {
+	constructor(public middleware?: string) {
 		super();
 		this.initAppVariable();
 		this.initModule();
@@ -69,6 +69,23 @@ export class GenericApp extends AbstractGenericApp {
 	public setMainRouter(router: AbstractGenericRouter): void {
 		this.router = router;
 		this.initRoute();
+	}
+
+	public addRoute(router: express.Router, m?: any): void {
+		if (m) {
+			this.app.use('/' + m, router);
+		} else if (this.middleware) {
+			this.app.use('/' + this.middleware, router);
+		} else {
+			this.app.use('/', router);
+			const routes = [];
+			router.stack.forEach((r: any) => {
+				if (r.route) {
+					routes.push(Object.keys(m.route.methods) + " -> " + m.route.path);
+				}
+			});
+			console.log('Route for :', JSON.stringify(routes, null, 4));
+		}
 	}
 
 	protected logErrors(err: Error, req: Request, res: Response, next: NextFunction): void {
