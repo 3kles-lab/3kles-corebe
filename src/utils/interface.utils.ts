@@ -6,6 +6,7 @@ interface IHttpOptions {
 	method: string;
 	rejectUnauthorized: boolean;
 	headers: any;
+	data?: any;
 }
 
 interface IRequestParameter {
