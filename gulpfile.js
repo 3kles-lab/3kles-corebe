@@ -13,11 +13,24 @@ var rename = require('gulp-rename');
 var browserify = require('browserify');
 var gutil = require('gulp-util');
 var runSequence = require('run-sequence');
+var execouglin = require('gulp-exec');
+var exec = require('child_process').exec;
 var tsConfig = './tsconfig.json';
 
+// INIT VARIABLES
 const DIST_DIR = 'dist';
 const BUILD_DIR = 'build';
 const ALL_JS = '/**/*.js';
+var options = {
+    continueOnError: false, // default = false, true means don't emit error event
+    pipeStdout: false, // default = false, true means stdout is written to file.contents
+    customTemplatingThing: "test" // content passed to lodash.template()
+  };
+  var reportOptions = {
+  	err: true, // default = true, false means don't write err
+  	stderr: true, // default = true, false means don't write stderr
+  	stdout: true // default = true, false means don't write stdout
+  };
 
 // BUILD
 gulp.task('lint', () => {
@@ -106,6 +119,15 @@ gulp.task('clean-dist', () => {
 gulp.task('clean-build', () => {
 	return gulp.src(BUILD_DIR, { force: true })
 		.pipe(clean());
+});
+
+// PUBLISH
+gulp.task('publish', ['transpile'], (cb) => {
+	exec('npm run --force', function (err, stdout, stderr) {
+		console.log(stdout);
+		console.log(stderr);
+		cb(err);
+	  });
 });
 
 
