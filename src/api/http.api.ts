@@ -1,7 +1,7 @@
 import * as https from 'https';
 import * as http from 'http';
-import { IGenericAPI } from './IGenericAPI';
-import { IHttpOptions } from '../utils/interface.utils';
+import {IGenericAPI} from './IGenericAPI';
+import {IHttpOptions} from '../utils/interface.utils';
 
 export class HttpApi implements IGenericAPI {
 
@@ -12,6 +12,7 @@ export class HttpApi implements IGenericAPI {
 			this.protocol = protocol;
 		}
 	}
+
 	// Function to create options request data
 	public buildRequest(params: IHttpOptions, id?: any, data?: any): any {
 		console.log("Parameters:", params);
@@ -27,6 +28,7 @@ export class HttpApi implements IGenericAPI {
 	public async executeRequest(options: any): Promise<any> {
 		return new Promise((resolve, reject) => {
 			this.beforeExecute();
+
 			// tslint:disable-next-line:typedef
 			function callback(res) {
 				// reject on bad status
@@ -49,6 +51,7 @@ export class HttpApi implements IGenericAPI {
 					resolve(body);
 				});
 			}
+
 			console.log('Options: ', options);
 			let req;
 			if (this.protocol === 'https') {
@@ -56,7 +59,10 @@ export class HttpApi implements IGenericAPI {
 			} else {
 				req = http.request(options, callback.bind(this));
 			}
-			req.write(options.data);
+			if (options.data) {
+				req.write(options.data);
+			}
+
 			req.end();
 		});
 		this.afterExecute();
@@ -70,6 +76,11 @@ export class HttpApi implements IGenericAPI {
 		return error;
 	}
 
-	public beforeExecute(): void { return; }
-	public afterExecute(): void { return; }
+	public beforeExecute(): void {
+		return;
+	}
+
+	public afterExecute(): void {
+		return;
+	}
 }
