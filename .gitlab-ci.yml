@@ -1,0 +1,35 @@
+image: node:9.4.0
+
+stages:
+  - build
+  - test
+  - deploy
+
+cache:
+  paths:
+    - node_modules/
+
+before_script:  
+  - apt-get update -qq && apt-get install
+
+build:
+  stage: build
+  script:
+    - npm install
+    - npm i -g gulp
+    - npm i --savedev
+    - npm run build 
+
+test:
+  stage: test
+  script:
+    - npm run test
+
+publish:
+  stage: deploy
+  only:
+    - tags
+    - triggers
+  script:
+    - npm run build
+    - npm publish

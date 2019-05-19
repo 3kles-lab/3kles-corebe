@@ -1,5 +1,5 @@
 interface IGenericService {
-	execute(type: string, data: any): void;
+	execute(type: string, data: any): any;
 	getParameters(): any;
 }
 export { IGenericService };
