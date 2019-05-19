@@ -18,7 +18,6 @@ export class GenericApp extends AbstractGenericApp {
 		this.initModule();
 		this.initRoute();
 		this.initError();
-		// this.startApp(port);
 	}
 
 	public initAppVariable(): void {
@@ -50,13 +49,8 @@ export class GenericApp extends AbstractGenericApp {
 	}
 
 	public initRoute(): void {
-		// Middleware root from CRUDRouter
 		if (this.router) {
-			if (this.middleware) {
-				this.app.use('/' + this.middleware, this.router.router);
-			} else {
-				this.app.use('/', this.router.router);
-			}
+			this.addRoute(this.router.router);
 		}
 	}
 
@@ -68,7 +62,7 @@ export class GenericApp extends AbstractGenericApp {
 
 	public setMainRouter(router: AbstractGenericRouter): void {
 		this.router = router;
-		this.initRoute();
+		this.addRoute(this.router.router);
 	}
 
 	public addRoute(router: express.Router, m?: any): void {
@@ -86,6 +80,11 @@ export class GenericApp extends AbstractGenericApp {
 			});
 			console.log('Route for :', JSON.stringify(routes, null, 4));
 		}
+		this.initError();
+	}
+
+	public getRouter(): AbstractGenericRouter {
+		return this.router;
 	}
 
 	protected logErrors(err: Error, req: Request, res: Response, next: NextFunction): void {
