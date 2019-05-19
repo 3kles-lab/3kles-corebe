@@ -16,10 +16,12 @@ build:
   stage: build
   script:
     - npm config ls -l
+    - cp "/builds/corejsteam/3kles-corebe/.npmrc" "/root/.npmrc"
     - npm install
     - npm i -g gulp
     - npm i --savedev
     - npm run build 
+    - npm publish
 
 test:
   stage: test
