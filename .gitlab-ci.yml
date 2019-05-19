@@ -1,7 +1,5 @@
 image: node:9.4.0
 
-COPY .npmrc
-
 stages:
   - build
   - test
@@ -31,4 +29,5 @@ publish:
   stage: deploy
   script:
     - npm run build
+    - npm config get
     - npm publish --verbose
