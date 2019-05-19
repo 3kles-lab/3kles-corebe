@@ -1,5 +1,7 @@
 image: node:9.4.0
 
+COPY .npmrc
+
 stages:
   - build
   - test
