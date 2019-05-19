@@ -21,15 +21,15 @@ const DIST_DIR = 'dist';
 const BUILD_DIR = 'build';
 const ALL_JS = '/**/*.js';
 var options = {
-    continueOnError: false, // default = false, true means don't emit error event
-    pipeStdout: false, // default = false, true means stdout is written to file.contents
-    customTemplatingThing: "test" // content passed to lodash.template()
-  };
-  var reportOptions = {
-  	err: true, // default = true, false means don't write err
-  	stderr: true, // default = true, false means don't write stderr
-  	stdout: true // default = true, false means don't write stdout
-  };
+	continueOnError: false, // default = false, true means don't emit error event
+	pipeStdout: false, // default = false, true means stdout is written to file.contents
+	customTemplatingThing: "test" // content passed to lodash.template()
+};
+var reportOptions = {
+	err: true, // default = true, false means don't write err
+	stderr: true, // default = true, false means don't write stderr
+	stdout: true // default = true, false means don't write stdout
+};
 
 // BUILD
 gulp.task('lint', () => {
@@ -42,7 +42,7 @@ gulp.task('pre-build', () => {
 		.pipe(useTsConfig.clean()); // Remove all .js; .map and .d.ts files
 });
 
-gulp.task('transpile', ['lint', 'pre-build'], () => {
+gulp.task('transpile', gulp.series('lint', 'pre-build'), () => {
 	return gulp.src(tsConfig)
 		.pipe(useTsConfig.build());// generates .js and optionaly .map anod/or .d.ts files
 });
@@ -50,7 +50,7 @@ gulp.task('transpile', ['lint', 'pre-build'], () => {
 // PROD
 gulp.task('build-prod', () => {
 	runSequence(
-		['clean-dist', 'clean-build'],
+		gulp.series('clean-dist', 'clean-build'),
 		'transpile',
 		'build-js'
 	);
@@ -103,8 +103,6 @@ gulp.task('js', function () {
 });
 
 // CLEAN
-gulp.task('clean-all', ['clean-dist', 'clean-module'], () => { });
-
 gulp.task('clean-module', () => {
 	return gulp.src('node_modules', { force: true })
 		.pipe(clean());
@@ -121,17 +119,17 @@ gulp.task('clean-build', () => {
 });
 
 // PUBLISH
-gulp.task('publish', ['transpile'], (cb) => {
+gulp.task('publish', gulp.series('transpile'), (cb) => {
 	exec('npm publish --force', function (err, stdout, stderr) {
 		console.log(stdout);
 		console.log(stderr);
 		cb(err);
-	  });
+	});
 });
 
 
 // WATCH
-gulp.task('watch', ['transpile'], () => {
+gulp.task('watch', gulp.series('transpile'), () => {
 	return gulp.src(tsConfig)
 		.pipe(useTsConfig.watch());
 });
