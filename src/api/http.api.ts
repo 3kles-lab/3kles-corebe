@@ -1,11 +1,13 @@
 import * as https from 'https';
 import * as http from 'http';
 import { IGenericAPI } from './IGenericAPI';
-import { IHttpOptions } from '../utils/interface.utils';
+import { IHttpOptions, IParserResponse } from '../utils/index.utils';
 
 export class HttpApi implements IGenericAPI {
 
 	protected protocol: string = 'http';
+	protected responseParser: IParserResponse;
+	protected errorParser: IParserResponse;
 
 	constructor(protocol?: string) {
 		if (protocol) {
@@ -56,20 +58,34 @@ export class HttpApi implements IGenericAPI {
 			} else {
 				req = http.request(options, callback.bind(this));
 			}
-			req.write(options.data);
+			req.write(options.data || '');
 			req.end();
 		});
 		this.afterExecute();
 	}
 
 	public processResponse(response: any): any {
-		return response;
+		return (this.responseParser) ? this.responseParser.parseResponse(response) : response;
 	}
 
 	public processError(error: any): any {
-		return error;
+		return (this.errorParser) ? this.errorParser.parseResponse(error) : error;
 	}
 
-	public beforeExecute(): void { return; }
-	public afterExecute(): void { return; }
+	public beforeExecute(): void {
+		console.log("Before execute");
+		return;
+	}
+	public afterExecute(): void {
+		console.log("After execute");
+		return;
+	}
+
+	public setResponseParser(parser: IParserResponse): void {
+		this.responseParser = parser;
+	}
+
+	public setErrorParser(parser: IParserResponse): void {
+		this.errorParser = parser;
+	}
 }

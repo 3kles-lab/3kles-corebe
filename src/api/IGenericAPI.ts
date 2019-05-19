@@ -1,3 +1,5 @@
+import { IParserResponse } from "../utils/index.utils";
+
 interface IGenericAPI {
 	buildRequest(params: any, id?: any, data?: any): any; // Function to create request options
 	executeRequest(options: any): Promise<any>; // Function to execute request and manage response
