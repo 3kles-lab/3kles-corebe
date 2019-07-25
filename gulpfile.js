@@ -31,6 +31,8 @@ var reportOptions = {
 	stdout: true // default = true, false means don't write stdout
 };
 
+
+
 // BUILD
 gulp.task('lint', () => {
 	return gulp.src(tsConfig)
@@ -42,19 +44,12 @@ gulp.task('pre-build', () => {
 		.pipe(useTsConfig.clean()); // Remove all .js; .map and .d.ts files
 });
 
-gulp.task('transpile', gulp.series('lint', 'pre-build'), () => {
-	return gulp.src(tsConfig)
-		.pipe(useTsConfig.build());// generates .js and optionaly .map anod/or .d.ts files
-});
+gulp.task('transpile', gulp.series('lint','pre-build', () => {
+	  return gulp.src(tsConfig)
+             .pipe(useTsConfig.build());// generates .js and optionaly .map anod/or .d.ts files
+}));
 
-// PROD
-gulp.task('build-prod', () => {
-	runSequence(
-		gulp.series('clean-dist', 'clean-build'),
-		'transpile',
-		'build-js'
-	);
-});
+
 
 gulp.task('build-js', () => {
 	var files = glob.sync('./' + DIST_DIR + ALL_JS);
@@ -75,6 +70,7 @@ gulp.task('build-js', () => {
 			.pipe(gulp.dest(BUILD_DIR))
 	});
 });
+
 
 
 gulp.task('js', function () {
@@ -108,24 +104,33 @@ gulp.task('clean-module', () => {
 		.pipe(clean());
 });
 
-gulp.task('clean-dist', () => {
+gulp.task('clean-dist', (done) => {
 	return gulp.src(DIST_DIR, { force: true })
-		.pipe(clean());
+		.on('error', () => {
+			console.log('Dist does not exist')
+			done()
+		})
+		.pipe(clean())
+		
 });
 
-gulp.task('clean-build', () => {
+gulp.task('clean-build', (done) => {
 	return gulp.src(BUILD_DIR, { force: true })
+		.on('error', () => {
+			console.log('Build does not exist')
+			done()
+		})
 		.pipe(clean());
 });
 
 // PUBLISH
-gulp.task('publish', gulp.series('transpile'), (cb) => {
+gulp.task('publish', gulp.series('transpile', (cb) => {
 	exec('npm publish --force', function (err, stdout, stderr) {
 		console.log(stdout);
 		console.log(stderr);
 		cb(err);
 	});
-});
+}));
 
 
 // WATCH
@@ -133,3 +138,9 @@ gulp.task('watch', gulp.series('transpile'), () => {
 	return gulp.src(tsConfig)
 		.pipe(useTsConfig.watch());
 });
+
+
+// PROD
+gulp.task('build-prod', gulp.series('clean-dist', 'clean-build','transpile','build-js', (done) => {
+	done()
+}));
