@@ -2,7 +2,6 @@ import * as bodyParser from 'body-parser';
 import * as helmet from 'helmet';
 import * as compression from 'compression';
 import * as express from 'express';
-import { NextFunction, Request, Response, Error } from 'express-validation';
 import * as morgan from 'morgan';
 import * as path from 'path';
 import { AbstractGenericApp } from './abstract.generic.app';
@@ -87,12 +86,12 @@ export class GenericApp extends AbstractGenericApp {
 		return this.router;
 	}
 
-	protected logErrors(err: Error, req: Request, res: Response, next: NextFunction): void {
+	protected logErrors(err: Error, req: express.Request, res: express.Response, next: express.NextFunction): void {
 		console.error(err.stack);
 		next(err);
 	}
 
-	protected clientErrorHandler(err: Error, req: Request, res: Response, next: NextFunction): void {
+	protected clientErrorHandler(err: Error, req: express.Request, res: express.Response, next: express.NextFunction): void {
 		if (req.xhr) {
 			res.status(500).send({ error: 'Something failed!' });
 		} else {
@@ -100,7 +99,7 @@ export class GenericApp extends AbstractGenericApp {
 		}
 	}
 
-	protected errorHandler(err: Error, req: Request, res: Response, next: NextFunction): void {
+	protected errorHandler(err: Error, req: express.Request, res: express.Response, next: express.NextFunction): void {
 		if (res.headersSent) {
 			return next(err);
 		}

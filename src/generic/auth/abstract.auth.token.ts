@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from 'express-validation';
 import * as blacklist from 'express-jwt-blacklist';
+import * as express from 'express';
 import { IAuth } from "./IAuth";
 
 export abstract class AbstractAuthToken implements IAuth {
@@ -19,10 +19,10 @@ export abstract class AbstractAuthToken implements IAuth {
 		this.revokeAuth = this.revokeAuth.bind(this);
 	}
 
-	public abstract async authenticate(req: Request, res: Response, next: NextFunction): Promise<any>;
-	public abstract async checkAuth(req: Request, res: Response, next: NextFunction): Promise<void>;
+	public abstract async authenticate(req: express.Request, res: express.Response, next: express.NextFunction): Promise<any>;
+	public abstract async checkAuth(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void>;
 
-	public revokeAuth(req: Request, res: Response, next: NextFunction): void {
+	public revokeAuth(req: express.Request, res: express.Response, next: express.NextFunction): void {
 		blacklist.revoke(req.user);
 	}
 

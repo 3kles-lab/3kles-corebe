@@ -1,4 +1,4 @@
-import { Request } from 'express-validation';
+import * as express from 'express';
 import { IGenericService } from '../index.generic';
 import { IGenericController } from './IGeneric.controller';
 
@@ -11,7 +11,7 @@ export abstract class AbstractGenericController implements IGenericController {
 	}
 
 	public abstract execute(type: string): any;
-	public abstract updateParamFromRequest(type: string, req: Request): void;
+	public abstract updateParamFromRequest(type: string, req: express.Request): void;
 
 	public setService(s: IGenericService): void {
 		this.service = s;

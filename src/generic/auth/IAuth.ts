@@ -1,7 +1,8 @@
-import { NextFunction, Request, Response } from 'express-validation';
+import * as express from 'express';
+
 interface IAuth {
-	authenticate(req: Request, res: Response, next: NextFunction): Promise<any>;
-	checkAuth(req: Request, res: Response, next: NextFunction): void;
-	revokeAuth(req: Request, res: Response, next: NextFunction): void;
+	authenticate(req: express.Request, res: express.Response, next: express.NextFunction): Promise<any>;
+	checkAuth(req: express.Request, res: express.Response, next: express.NextFunction): void;
+	revokeAuth(req: express.Request, res: express.Response, next: express.NextFunction): void;
 }
 export { IAuth };
