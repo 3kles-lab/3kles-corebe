@@ -86,6 +86,6 @@
     ]
   },
   "publishConfig": {
-    "registry": "http://192.168.111.23:8081/repository/npm-3kles/"
+    "registry": "http://192.168.111.61:8081/repository/npm-3kles/"
   }
 }

@@ -8,4 +8,8 @@ export abstract class AbstractGenericService implements IGenericService {
 	public getParameters(): any {
 		return this.parameters;
 	}
+
+	public setParameters(params: any): void {
+		this.parameters = params;
+	}
 }

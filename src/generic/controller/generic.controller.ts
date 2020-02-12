@@ -5,8 +5,10 @@ import { ExtendableError } from '../../utils/extendable-error';
 
 export class GenericController extends AbstractGenericController {
 
-	constructor(s: GenericService) {
-		super(s);
+	constructor(s?: GenericService) {
+		if (s) {
+			super(s);
+		}
 	}
 
 	public execute(type: string): any {
@@ -15,7 +17,7 @@ export class GenericController extends AbstractGenericController {
 				this.updateParamFromRequest(type, req);
 				const response = await this.service.execute(type, req.body);
 				if (!response) throw new ExtendableError(type + '-not-found', 404);
-				res.json(response);
+				res.json(this.parseResponse(response, type));
 			} catch (err) {
 				next(err);
 			}
