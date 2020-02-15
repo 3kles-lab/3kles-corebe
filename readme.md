@@ -8,7 +8,7 @@ This package contains interface and class to create Express Application
 
 - **buildRequest**: Method to build the request api from parameters and data
 - **executeRequest**: Method to execute the request
-- **processResponse**: Method called to manage response 
+- **processResponse**: Method called to manage response
 - **processError**: Method called to manage error response
   
 In this module there is a class **HttpApi** that implement **IGenericApi** to manage http/s request protocol.
