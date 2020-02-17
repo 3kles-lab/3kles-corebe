@@ -20,8 +20,8 @@ export abstract class AbstractGenericAPI implements IGenericAPI {
 		}
 	}
 
-	public processResponse(response: any): any { return this.responseParser.parseResponse(response) || response; }
-	public processError(error: any): any { return this.errorParser.parseResponse(error) || error; }
+	public processResponse(response: any): any { return (this.responseParser) ? this.responseParser.parseResponse(response) : response; }
+	public processError(error: any): any { return (this.errorParser) ? this.errorParser.parseResponse(error) : error; }
 	public beforeExecute(): void { return; }
 	public afterExecute(): void { return; }
 }
