@@ -1,36 +1,27 @@
-image: node:9.4.0
+image: 192.168.111.61:5005/docker/node-internal
 
-stages:
-  - build
-  - test
-  - deploy
+variables:
+  DOCKER_DRIVER: overlay2
+  REGISTRY: 192.168.111.61:5005
+  CONTAINER_IMAGE: $REGISTRY/$CI_PROJECT_PATH
+  
 
-cache:
-  paths:
-    - node_modules/
-
-before_script:  
-  - apt-get update -qq && apt-get install
+before_script:
+# Ensure that node works correctly
+- npm -v
+- node -v
+# Install gulp globally
+- npm i -g gulp
 
 build:
   stage: build
   script:
-    - npm config ls -l
-    - cp "/builds/corejsteam/3kles-corebe/.npmrc" "/root/.npmrc"
-    - npm install
-    - npm i -g gulp
-    - npm i --savedev
-    - npm run build 
-    - npm publish
+    - npm i
+    - gulp build-prod
 
-test:
-  stage: test
-  script:
-    - npm run test
-
-publish:
+deploy:
   stage: deploy
   script:
-    - npm run build
-    - npm config get
-    - npm publish --verbose
+    - npm i
+    - gulp build-prod
+    - gulp publish
