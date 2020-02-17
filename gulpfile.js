@@ -15,6 +15,8 @@ var gutil = require('gulp-util');
 var runSequence = require('run-sequence');
 var exec = require('child_process').exec;
 var tsConfig = './tsconfig.json';
+var es = require('event-stream');
+
 
 // INIT VARIABLES
 const DIST_DIR = 'dist';
@@ -44,31 +46,30 @@ gulp.task('pre-build', () => {
 		.pipe(useTsConfig.clean()); // Remove all .js; .map and .d.ts files
 });
 
-gulp.task('transpile', gulp.series('lint','pre-build', () => {
-	  return gulp.src(tsConfig)
-             .pipe(useTsConfig.build());// generates .js and optionaly .map anod/or .d.ts files
+gulp.task('transpile', gulp.series('lint', 'pre-build', () => {
+	return gulp.src(tsConfig)
+		.pipe(useTsConfig.build());// generates .js and optionaly .map anod/or .d.ts files
 }));
 
 
 
-gulp.task('build-js', () => {
+gulp.task('build-js', (done) => {
 	var files = glob.sync('./' + DIST_DIR + ALL_JS);
-	console.log(files);
-	return files.map(function (file) {
-		return browserify({
-			entries: file,
-			debug: true
-		}).transform(babelify, { presets: ['env'] })
-			.bundle()
-			.pipe(source(file))
+
+	var tasks = files.map(function(file) {
+        return browserify({ entries: [file] })
+			.transform(babelify, { presets: ['env'] })
+            .bundle()
+            .pipe(source(file))
 			.pipe(rename({ extname: '.min.js' }))
-			.pipe(buffer())
+            .pipe(buffer())
 			.pipe(sourcemaps.init({ loadMaps: true }))
 			.pipe(terser())
 			.on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
 			.pipe(sourcemaps.write('./'))
 			.pipe(gulp.dest(BUILD_DIR))
-	});
+        });
+    return es.merge.apply(null, tasks).on('end',done);
 });
 
 
@@ -111,7 +112,7 @@ gulp.task('clean-dist', (done) => {
 			done()
 		})
 		.pipe(clean())
-		
+
 });
 
 gulp.task('clean-build', (done) => {
@@ -141,6 +142,7 @@ gulp.task('watch', gulp.series('transpile'), () => {
 
 
 // PROD
-gulp.task('build-prod', gulp.series('clean-dist', 'clean-build','transpile','build-js', (done) => {
-	done()
+gulp.task('build-prod', gulp.series('clean-dist', 'clean-build', 'transpile', 'build-js', (done) => {
+	done();
 }));
+
