@@ -11,11 +11,11 @@ export abstract class AbstractGenericApp implements IGenericApp {
 		this.app = express();
 		// DETECT MODE
 		if (process.env.NODE_ENV === 'production') {
-			dotenv.load({ path: '.env.prod' });
+			dotenv.config({ path: '.env.prod' });
 		} else if (process.env.NODE_ENV === 'developement') {
-			dotenv.load({ path: '.env.dev' });
+			dotenv.config({ path: '.env.dev' });
 		} else {
-			dotenv.load({ path: '.env' });
+			dotenv.config({ path: '.env' });
 		}
 	}
 
