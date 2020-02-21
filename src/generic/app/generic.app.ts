@@ -47,7 +47,7 @@ export class GenericApp extends AbstractGenericApp {
 		if (this.app.get('COMPRESSION') === 'true') {
 			this.app.use(compression());
 		}
-		if(this.app.get('CORS') === 'true'){
+		if (this.app.get('CORS') === 'true') {
 			this.app.use(cors());
 		}
 	}
