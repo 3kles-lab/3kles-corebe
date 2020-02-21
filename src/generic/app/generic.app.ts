@@ -22,8 +22,8 @@ export class GenericApp extends AbstractGenericApp {
 	public initAppVariable(): void {
 		this.app.set('PORT', process.env.PORT || this.app.get('PORT'));
 		this.app.set('LOG', process.env.LOG || false);
-		this.app.set('HELMET', process.env.HELMET || false);
-		this.app.set('COMPRESSION', process.env.COMPRESSION || false);
+		this.app.set('HELMET', process.env.HELMET || true);
+		this.app.set('COMPRESSION', process.env.COMPRESSION || true);
 		this.app.set('SECURE_ROUTE', process.env.SECURE_ROUTE || false);
 	}
 
