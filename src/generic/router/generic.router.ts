@@ -14,29 +14,30 @@ export class GenericRouter extends AbstractGenericRouter {
 	public addController(controller: IGenericController, checker?: any): void {
 		if (controller) {
 			for (const key of Object.keys(controller.getParameters())) {
+				const route = (controller.getParameters()[key].path) ? controller.getParameters()[key].path : key;
 				if (controller.getParameters()[key].method) {
 					switch (controller.getParameters()[key].method) {
 						case 'GET':
-							this.router.route('/' + key).get(controller.execute(key));
+							this.router.route('/' + route).get(controller.execute(key));
 							break;
 						case 'POST':
-							this.router.route('/' + key).post(controller.execute(key));
+							this.router.route('/' + route).post(controller.execute(key));
 							break;
 						case 'PUT':
-							this.router.route('/' + key).put(controller.execute(key));
+							this.router.route('/' + route).put(controller.execute(key));
 							break;
 						case 'DELETE':
-							this.router.route('/' + key).delete(controller.execute(key));
+							this.router.route('/' + route).delete(controller.execute(key));
 							break;
 						case 'PATCH':
-							this.router.route('/' + key).patch(controller.execute(key));
+							this.router.route('/' + route).patch(controller.execute(key));
 							break;
 						case 'SEARCH':
-							this.router.route('/' + key).search(controller.execute(key));
+							this.router.route('/' + route).search(controller.execute(key));
 							break;
 					}
 				} else {
-					this.router.route('/' + key).get(controller.execute(key));
+					this.router.route('/' + route).get(controller.execute(key));
 				}
 			}
 		}

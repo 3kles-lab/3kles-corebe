@@ -71,13 +71,6 @@ export class GenericApp extends AbstractGenericApp {
 			this.app.use('/' + this.middleware, router);
 		} else {
 			this.app.use('/', router);
-			const routes = [];
-			router.stack.forEach((r: any) => {
-				if (r.route) {
-					routes.push(Object.keys(m.route.methods) + " -> " + m.route.path);
-				}
-			});
-			console.log('Route for :', JSON.stringify(routes, null, 4));
 		}
 		this.initError();
 	}
