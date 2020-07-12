@@ -4,6 +4,7 @@ import * as compression from 'compression';
 import * as express from 'express';
 import * as morgan from 'morgan';
 import * as path from 'path';
+import * as cors from 'cors';
 import { AbstractGenericApp } from './abstract.generic.app';
 import { AbstractGenericRouter } from '../../index';
 
@@ -22,9 +23,10 @@ export class GenericApp extends AbstractGenericApp {
 	public initAppVariable(): void {
 		this.app.set('PORT', process.env.PORT || this.app.get('PORT'));
 		this.app.set('LOG', process.env.LOG || false);
-		this.app.set('HELMET', process.env.HELMET || false);
-		this.app.set('COMPRESSION', process.env.COMPRESSION || false);
+		this.app.set('HELMET', process.env.HELMET || true);
+		this.app.set('COMPRESSION', process.env.COMPRESSION || true);
 		this.app.set('SECURE_ROUTE', process.env.SECURE_ROUTE || false);
+		this.app.set('CORS', process.env.CORS || true);
 	}
 
 	public initModule(): void {
@@ -44,6 +46,9 @@ export class GenericApp extends AbstractGenericApp {
 		// Compress request
 		if (this.app.get('COMPRESSION') === 'true') {
 			this.app.use(compression());
+		}
+		if (this.app.get('CORS') === 'true') {
+			this.app.use(cors());
 		}
 	}
 
