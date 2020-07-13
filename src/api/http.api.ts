@@ -23,6 +23,9 @@ export class HttpApi implements IGenericAPI {
 			this.protocol = params.protocol;
 		}
 		const options: IHttpOptions = params;
+		if (data) {
+			options.data = data;
+		}
 		return options;
 	}
 
