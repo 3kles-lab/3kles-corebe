@@ -25,7 +25,7 @@
   "scripts": {
     "dev": "nodemon --exec ts-node src/app.ts",
     "build": "gulp transpile",
-    "prod": "gulp prod"
+    "prod": "gulp build-prod"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
