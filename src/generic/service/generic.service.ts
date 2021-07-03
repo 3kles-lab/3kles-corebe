@@ -2,7 +2,7 @@ import { IGenericAPI } from '../../api/IGenericAPI';
 import { AbstractGenericService } from './abstract.generic.service';
 
 export class GenericService extends AbstractGenericService {
-	private apiUtils: IGenericAPI;
+	protected apiUtils: IGenericAPI;
 
 	constructor(api: IGenericAPI, params?: any) {
 		super();
