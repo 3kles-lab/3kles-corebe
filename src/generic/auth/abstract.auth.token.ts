@@ -6,14 +6,14 @@ export abstract class AbstractAuthToken implements IAuth {
 
 	protected parameters: any;
 	protected secretKey: string;
-	protected expiredTime: number;
+	protected expiredTime: string | number;
 
-	constructor(params: any) {
+	constructor(params?: any) {
 		if (params) {
 			this.parameters = params;
 		}
 		this.secretKey = process.env.JWT_SECRET || 'secret';
-		this.expiredTime = Number(process.env.EXPIREDTIME) || 60;
+		this.expiredTime = process.env.JWT_EXPIREDTIME || 60;
 		this.authenticate = this.authenticate.bind(this);
 		this.checkAuth = this.checkAuth.bind(this);
 		this.revokeAuth = this.revokeAuth.bind(this);
