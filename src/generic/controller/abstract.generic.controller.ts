@@ -19,6 +19,10 @@ export abstract class AbstractGenericController implements IGenericController {
 		return response;
 	}
 
+	public getService(): IGenericService {
+		return this.service;
+	}
+
 	public setService(s: IGenericService): void {
 		this.service = s;
 		this.parameters = this.service.getParameters();
