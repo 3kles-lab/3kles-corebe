@@ -41,12 +41,12 @@
     "joi": "^13.6.0",
     "jsonwebtoken": "^8.2.1",
     "morgan": "^1.9.0",
-    "path": "^0.12.7",
-    "ts-node": "^5.0.1",
-    "tsc": "^1.20150623.0",
-    "typescript": "^2.7.2"
+    "path": "^0.12.7"
   },
   "devDependencies": {
+    "ts-node": "^5.0.1",
+    "tsc": "^1.20150623.0",
+    "typescript": "^2.7.2",
     "@babel/core": "^7.1.0",
     "@types/compression": "0.0.36",
     "@types/del": "^3.0.1",
