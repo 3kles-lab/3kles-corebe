@@ -6,7 +6,7 @@ export abstract class AbstractGenericAPI implements IGenericAPI {
 	protected errorParser: IParserResponse;
 
 	public abstract buildRequest(params: any, id?: any, data?: any): any;
-	public abstract async execute(options: any): Promise<any>;
+	public abstract execute(options: any): Promise<any>;
 
 	public async executeRequest(options: any): Promise<any> {
 		try {

@@ -19,11 +19,11 @@ export abstract class AbstractAuthToken implements IAuth {
 		this.revokeAuth = this.revokeAuth.bind(this);
 	}
 
-	public abstract async authenticate(req: express.Request, res: express.Response, next: express.NextFunction): Promise<any>;
-	public abstract async checkAuth(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void>;
+	public abstract authenticate(req: express.Request, res: express.Response, next: express.NextFunction): Promise<any>;
+	public abstract checkAuth(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void>;
 
 	public revokeAuth(req: express.Request, res: express.Response, next: express.NextFunction): void {
-		blacklist.revoke(req.user);
+		// blacklist.revoke(req.user);
 	}
 
 }
