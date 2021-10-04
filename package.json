@@ -81,8 +81,5 @@
     "presets": [
       "env"
     ]
-  },
-  "publishConfig": {
-    "registry": "http://192.168.111.61:8081/repository/npm-3kles/"
   }
 }
