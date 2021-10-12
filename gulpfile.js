@@ -126,7 +126,7 @@ gulp.task('clean-build', (done) => {
 
 // PUBLISH
 gulp.task('publish', gulp.series('transpile', (cb) => {
-	exec('npm publish --force', function (err, stdout, stderr) {
+	exec('npm publish --force --access public', function (err, stdout, stderr) {
 		console.log(stdout);
 		console.log(stderr);
 		cb(err);
@@ -145,4 +145,3 @@ gulp.task('watch', gulp.series('transpile'), () => {
 gulp.task('build-prod', gulp.series('clean-dist', 'clean-build', 'transpile', 'build-js', (done) => {
 	done();
 }));
-
