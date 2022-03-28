@@ -17,7 +17,7 @@ export class HttpApi implements IGenericAPI {
 
 	// Function to create options request data
 	public buildRequest(params: IHttpOptions, id?: any, data?: any): any {
-		console.log("Parameters:", params);
+		// console.log("Parameters:", params);
 		// Create options request
 		if (params.protocol) {
 			this.protocol = params.protocol;
@@ -57,7 +57,7 @@ export class HttpApi implements IGenericAPI {
 				});
 			}
 
-			console.log('Options: ', options);
+			// console.log('Options: ', options);
 			let req;
 			if (this.protocol === 'https') {
 				req = https.request(options, callback.bind(this));
@@ -82,11 +82,11 @@ export class HttpApi implements IGenericAPI {
 	}
 
 	public beforeExecute(): void {
-		console.log("Before execute");
+		// console.log("Before execute");
 		return;
 	}
 	public afterExecute(): void {
-		console.log("After execute");
+		// console.log("After execute");
 		return;
 	}
 
