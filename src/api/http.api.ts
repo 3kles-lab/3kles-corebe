@@ -36,10 +36,6 @@ export class HttpApi implements IGenericAPI {
 
 			// tslint:disable-next-line:typedef
 			function callback(res) {
-				// reject on bad status
-				if (res.statusCode < 200 || res.statusCode > 304) {
-					return reject(new Error('statusCode=' + res.statusCode));
-				}
 				// cumulate data
 				let body = [];
 				res.on('data', (chunk) => {
@@ -53,7 +49,13 @@ export class HttpApi implements IGenericAPI {
 						const error = this.processError(e);
 						reject(error);
 					}
-					resolve(body);
+					// reject on bad status
+					if (res.statusCode < 200 || res.statusCode > 304) {
+						reject({statusCode: res.statusCode, body});
+					} else {
+						resolve(body);
+					}
+					
 				});
 			}
 
