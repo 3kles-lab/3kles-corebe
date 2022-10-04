@@ -1,4 +1,5 @@
 import * as express from 'express';
+import { IGenericHandler } from '../handler/IGeneric.handler';
 import { IGenericService } from '../index.generic';
 import { IGenericController } from './IGeneric.controller';
 
@@ -6,10 +7,14 @@ export abstract class AbstractGenericController implements IGenericController {
 
 	protected service: IGenericService;
 	protected parameters: any = [];
+	protected handler: IGenericHandler;
 
-	constructor(s?: IGenericService) {
+	constructor(s?: IGenericService, handler?: IGenericHandler) {
 		if (s) {
 			this.setService(s);
+		}
+		if(handler){
+			this.setHandler(handler);
 		}
 	}
 
@@ -23,9 +28,17 @@ export abstract class AbstractGenericController implements IGenericController {
 		return this.service;
 	}
 
+	public getHandler(): IGenericHandler {
+		return this.handler;
+	}
+
 	public setService(s: IGenericService): void {
 		this.service = s;
 		this.parameters = this.service.getParameters();
+	}
+	
+	public setHandler(handler: IGenericHandler): void {
+		this.handler = handler;
 	}
 
 	public getParameters(): any {

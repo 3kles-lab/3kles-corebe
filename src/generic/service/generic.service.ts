@@ -13,7 +13,7 @@ export class GenericService extends AbstractGenericService {
 	public async execute(type: string, data: any): Promise<any> {
 		try {
 			if (this.parameters[type]) {
-				const param = this.apiUtils.buildRequest(this.parameters[type], null, data);
+				const param = this.apiUtils.buildRequest(this.parameters[type], null, data.body);
 				const response = await this.apiUtils.executeRequest(param);
 				return response;
 			}
