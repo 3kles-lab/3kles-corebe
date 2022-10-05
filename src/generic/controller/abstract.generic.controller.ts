@@ -13,7 +13,7 @@ export abstract class AbstractGenericController implements IGenericController {
 		if (s) {
 			this.setService(s);
 		}
-		if(handler){
+		if (handler) {
 			this.setHandler(handler);
 		}
 	}
@@ -36,7 +36,7 @@ export abstract class AbstractGenericController implements IGenericController {
 		this.service = s;
 		this.parameters = this.service.getParameters();
 	}
-	
+
 	public setHandler(handler: IGenericHandler): void {
 		this.handler = handler;
 	}

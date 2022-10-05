@@ -51,11 +51,11 @@ export class HttpApi implements IGenericAPI {
 					}
 					// reject on bad status
 					if (res.statusCode < 200 || res.statusCode > 304) {
-						reject({statusCode: res.statusCode, body});
+						reject({ statusCode: res.statusCode, body });
 					} else {
 						resolve(body);
 					}
-					
+
 				});
 			}
 
