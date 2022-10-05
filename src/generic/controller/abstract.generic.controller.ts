@@ -1,20 +1,21 @@
 import * as express from 'express';
 import { IGenericHandler } from '../handler/IGeneric.handler';
 import { IGenericService } from '../index.generic';
-import { IGenericController } from './IGeneric.controller';
+import { ControllerOption, IGenericController } from './IGeneric.controller';
+import { ValidationResult } from 'joi';
 
 export abstract class AbstractGenericController implements IGenericController {
 
 	protected service: IGenericService;
 	protected parameters: any = [];
-	protected handler: IGenericHandler;
+	protected option: ControllerOption;
 
-	constructor(s?: IGenericService, handler?: IGenericHandler) {
+	constructor(s?: IGenericService, option?: ControllerOption) {
 		if (s) {
 			this.setService(s);
 		}
-		if (handler) {
-			this.setHandler(handler);
+		if (option) {
+			this.setOption(option);
 		}
 	}
 
@@ -28,8 +29,8 @@ export abstract class AbstractGenericController implements IGenericController {
 		return this.service;
 	}
 
-	public getHandler(): IGenericHandler {
-		return this.handler;
+	public getOption(): any {
+		return this.option;
 	}
 
 	public setService(s: IGenericService): void {
@@ -37,8 +38,8 @@ export abstract class AbstractGenericController implements IGenericController {
 		this.parameters = this.service.getParameters();
 	}
 
-	public setHandler(handler: IGenericHandler): void {
-		this.handler = handler;
+	public setOption(handler: any): void {
+		this.option = handler;
 	}
 
 	public getParameters(): any {
@@ -48,4 +49,7 @@ export abstract class AbstractGenericController implements IGenericController {
 	public setParameters(params: any): void {
 		this.parameters = params;
 	}
+
+	// tslint:disable-next-line: no-empty
+	public setResponseHeader(res: express.Response<any, Record<string, any>>, response: { data: any; totalCount?: number; }): void { }
 }

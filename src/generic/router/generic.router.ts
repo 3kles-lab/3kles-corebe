@@ -14,7 +14,7 @@ export class GenericRouter extends AbstractGenericRouter {
 
 	public addController(controller: IGenericController, checker?: any): void {
 		if (controller) {
-			const handler = controller.getHandler()?.handler || new GenericHandler().handler;
+			const handler = controller.getOption()?.handler?.handler || new GenericHandler().handler;
 
 			for (const key of Object.keys(controller.getParameters())) {
 				const route = (controller.getParameters()[key].path) ? controller.getParameters()[key].path : key;

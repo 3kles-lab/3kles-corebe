@@ -1,13 +1,12 @@
 import * as express from 'express';
-import { GenericService } from '../index.generic';
+import { ControllerOption, GenericService } from '../index.generic';
 import { AbstractGenericController } from './abstract.generic.controller';
 import { ExtendableError } from '../../utils/extendable-error';
-import { IGenericHandler } from '../handler/IGeneric.handler';
 
 export class GenericController extends AbstractGenericController {
 
-	constructor(s?: GenericService, h?: IGenericHandler) {
-		super(s, h);
+	constructor(s?: GenericService, o?: ControllerOption) {
+		super(s, o);
 	}
 
 	public execute(type: string): any {
@@ -15,15 +14,20 @@ export class GenericController extends AbstractGenericController {
 			try {
 				this.updateParamFromRequest(type, req);
 
+				if (this.option?.validation) {
+					const { error } = this.option.validation(type, req.body);
+					if (error) {
+						throw new ExtendableError(error.message, 400);
+					}
+				}
+
 				req.query.per_page = req.query.per_page && +req.query.per_page >= 0 ? req.query.per_page : '0';
 				req.query.page = req.query.page && +req.query.page > 0 ? req.query.page : '1';
 
 				const response = await this.service.execute(type, req);
 				if (!response) throw new ExtendableError(type + '-not-found', 404);
 
-				if (Array.isArray(response.data)) {
-					res.setHeader('Total-Count', response.totalCount);
-				}
+				this.setResponseHeader(res, response);
 
 				res.json(this.parseResponse(response.data, type));
 			} catch (err) {
@@ -34,5 +38,11 @@ export class GenericController extends AbstractGenericController {
 
 	// tslint:disable-next-line:no-empty
 	public updateParamFromRequest(type: string, req: express.Request): void { }
+
+	public setResponseHeader(res: express.Response, response: { data: any, totalCount?: number }): void {
+		if (Array.isArray(response.data)) {
+			res.setHeader('Total-Count', response.totalCount);
+		}
+	}
 
 }

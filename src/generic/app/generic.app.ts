@@ -1,12 +1,12 @@
 import * as bodyParser from 'body-parser';
-import * as helmet from 'helmet';
+import helmet from 'helmet';
 import * as compression from 'compression';
 import * as express from 'express';
 import * as morgan from 'morgan';
 import * as path from 'path';
 import * as cors from 'cors';
 import { AbstractGenericApp } from './abstract.generic.app';
-import { AbstractGenericRouter } from '../../index';
+import { AbstractGenericRouter, ExtendableError } from '../../index';
 
 // Class to create an Express Server from CRUD router and optional port
 export class GenericApp extends AbstractGenericApp {
@@ -84,14 +84,14 @@ export class GenericApp extends AbstractGenericApp {
 		return this.router;
 	}
 
-	protected logErrors(err: Error, req: express.Request, res: express.Response, next: express.NextFunction): void {
+	protected logErrors(err: ExtendableError, req: express.Request, res: express.Response, next: express.NextFunction): void {
 		if (err.stack) {
 			console.error(err.stack);
 		}
 		next(err);
 	}
 
-	protected clientErrorHandler(err: Error, req: express.Request, res: express.Response, next: express.NextFunction): void {
+	protected clientErrorHandler(err: ExtendableError, req: express.Request, res: express.Response, next: express.NextFunction): void {
 		if (req.xhr) {
 			res.status(500).json({ error: 'Something failed!' });
 		} else {
@@ -99,11 +99,11 @@ export class GenericApp extends AbstractGenericApp {
 		}
 	}
 
-	protected errorHandler(err: Error, req: express.Request, res: express.Response, next: express.NextFunction): void {
+	protected errorHandler(err: ExtendableError, req: express.Request, res: express.Response, next: express.NextFunction): void {
 		if (res.headersSent) {
 			return next(err);
 		}
-		res.status(500).json({ error: err });
+		res.status(err.status || 500).json({ error: err.message });
 	}
 
 	protected print(p: any, layer: any): void {
