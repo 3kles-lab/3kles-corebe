@@ -30,7 +30,7 @@ export class HttpApi implements IGenericAPI {
 	}
 
 	// Function to execute request and manage response
-	public async executeRequest(options: any): Promise<any> {
+	public async executeRequest(options: any): Promise<{ statusCode: number, headers: any, body: any }> {
 		return new Promise((resolve, reject) => {
 			this.beforeExecute();
 
@@ -47,13 +47,13 @@ export class HttpApi implements IGenericAPI {
 						body = this.processResponse(body);
 					} catch (e) {
 						const error = this.processError(e);
-						reject(error);
+						reject({ statusCode: res.statusCode, body: error, headers: res.headers });
 					}
 					// reject on bad status
 					if (res.statusCode < 200 || res.statusCode > 304) {
-						reject({ statusCode: res.statusCode, body });
+						reject({ statusCode: res.statusCode, body, headers: res.headers });
 					} else {
-						resolve(body);
+						resolve({ statusCode: res.statusCode, body, headers: res.headers });
 					}
 
 				});
