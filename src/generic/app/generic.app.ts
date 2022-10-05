@@ -85,7 +85,7 @@ export class GenericApp extends AbstractGenericApp {
 	}
 
 	protected logErrors(err: Error, req: express.Request, res: express.Response, next: express.NextFunction): void {
-		if(err.stack){
+		if(err.stack) {
 			console.error(err.stack);
 		}
 		next(err);
