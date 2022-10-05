@@ -15,6 +15,9 @@ export class GenericController extends AbstractGenericController {
 			try {
 				this.updateParamFromRequest(type, req);
 
+				req.query.per_page = req.query.per_page && +req.query.per_page >= 0 ? req.query.per_page : '0';
+				req.query.page = req.query.page && +req.query.page > 0 ? req.query.page : '1';
+
 				const data = {
 					headers: req.headers,
 					params: req.params,
@@ -24,7 +27,12 @@ export class GenericController extends AbstractGenericController {
 
 				const response = await this.service.execute(type, data);
 				if (!response) throw new ExtendableError(type + '-not-found', 404);
-				res.json(this.parseResponse(response, type));
+
+				if (Array.isArray(response.data)) {
+					res.setHeader('Total-Count', response.totalCount);
+				}
+
+				res.json(this.parseResponse(response.data, type));
 			} catch (err) {
 				next(err);
 			}
