@@ -16,7 +16,7 @@ export class GenericService extends AbstractGenericService {
 				const param = this.apiUtils.buildRequest(this.parameters[type], null, data.body);
 				const response = await this.apiUtils.executeRequest(param);
 				return { data: response.body,
-					totalCount: response.headers.totalCount || Array.isArray(response.body) ? response.body.length : 1
+					totalCount: response.headers['total-count'] || Array.isArray(response.body) ? response.body.length : 1
 				};
 			}
 		} catch (e) {
