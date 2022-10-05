@@ -59,12 +59,17 @@ export class HttpApi implements IGenericAPI {
 				});
 			}
 
-			// console.log('Options: ', options);
 			let req;
 			if (this.protocol === 'https') {
-				req = https.request(options, callback.bind(this));
+				req = https.request(options, callback.bind(this)).on('error', (err) => {
+					console.error(err);
+					reject({ statusCode: 500, body: err, headers: {} });
+				});
 			} else {
-				req = http.request(options, callback.bind(this));
+				req = http.request(options, callback.bind(this)).on('error', (err) => {
+					console.error(err);
+					reject({ statusCode: 500, body: err, headers: {} });
+				});
 			}
 			if (options.data) {
 				req.write(options.data);
