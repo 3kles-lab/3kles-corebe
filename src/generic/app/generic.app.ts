@@ -85,13 +85,15 @@ export class GenericApp extends AbstractGenericApp {
 	}
 
 	protected logErrors(err: Error, req: express.Request, res: express.Response, next: express.NextFunction): void {
-		console.error(err.stack);
+		if(err.stack){
+			console.error(err.stack);
+		}
 		next(err);
 	}
 
 	protected clientErrorHandler(err: Error, req: express.Request, res: express.Response, next: express.NextFunction): void {
 		if (req.xhr) {
-			res.status(500).send({ error: 'Something failed!' });
+			res.status(500).json({ error: 'Something failed!' });
 		} else {
 			next(err);
 		}
@@ -101,8 +103,7 @@ export class GenericApp extends AbstractGenericApp {
 		if (res.headersSent) {
 			return next(err);
 		}
-		res.status(500);
-		res.render('error', { error: err });
+		res.status(500).json({ error: err });
 	}
 
 	protected print(p: any, layer: any): void {
