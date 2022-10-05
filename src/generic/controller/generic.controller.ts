@@ -6,7 +6,7 @@ import { IGenericHandler } from '../handler/IGeneric.handler';
 
 export class GenericController extends AbstractGenericController {
 
-	constructor(s?: GenericService, h?:IGenericHandler) {
+	constructor(s?: GenericService, h?: IGenericHandler) {
 		super(s, h);
 	}
 
@@ -16,10 +16,10 @@ export class GenericController extends AbstractGenericController {
 				this.updateParamFromRequest(type, req);
 
 				const data = {
-                    headers: req.headers,
-                    params: req.params,
-                    query: req.query,
-                    body: req.body,
+					headers: req.headers,
+					params: req.params,
+					query: req.query,
+					body: req.body,
 				};
 
 				const response = await this.service.execute(type, data);
