@@ -1,14 +1,29 @@
-import { GenericApp, GenericRouter, GenericService, GenericController, HttpApi, IHttpOptions } from './index';
+import { GenericApp, GenericRouter, GenericService, GenericController, HttpApi, IHttpOptions, ServiceParams } from './index';
 import { JSONParser } from './utils/index.utils';
 
-const parameters = {
-	getproject: {
-		hostname: "gitlab.3kles.local",
-		port: 80,
-		path: "/api/v4/issues?private_token=3KzstUKxhuSbV_CKY7Fy",
-		method: "GET",
-		rejectUnauthorized: false
-	} as IHttpOptions
+const parameters: ServiceParams = {
+	listSelections: {
+		path: 'selections',
+		method: 'GET',
+		option: {
+			hostname: "localhost",
+			port: 12100,
+			path: "/selections",
+			method: "GET",
+			rejectUnauthorized: false
+		}
+	},
+	getSelection:{
+		path: 'selections/:id',
+		method: 'GET',
+		option: {
+			hostname: "localhost",
+			port: 12100,
+			path: "/selections/:id",
+			method: "GET",
+			rejectUnauthorized: false
+		}
+	}
 };
 
 const app: GenericApp = new GenericApp('api');

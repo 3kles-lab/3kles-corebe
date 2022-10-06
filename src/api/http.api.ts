@@ -16,13 +16,13 @@ export class HttpApi implements IGenericAPI {
 	}
 
 	// Function to create options request data
-	public buildRequest(params: IHttpOptions, id?: any, data?: any): any {
+	public buildRequest(params: IHttpOptions, id?: any, data?: string): any {
 		// console.log("Parameters:", params);
 		// Create options request
 		if (params.protocol) {
 			this.protocol = params.protocol;
 		}
-		const options: IHttpOptions = params;
+		const options: IHttpOptions = {...params};
 		if (data) {
 			options.data = data;
 		}

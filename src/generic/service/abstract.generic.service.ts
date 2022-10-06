@@ -1,15 +1,15 @@
-import { IGenericService } from './IGeneric.service';
+import { IGenericService, ServiceParams } from './IGeneric.service';
 
 export abstract class AbstractGenericService implements IGenericService {
-	protected parameters: any;
+	protected parameters: ServiceParams;
 
 	public abstract execute(type: string, data: any): Promise<{ data: any, totalCount?: number }>;
 
-	public getParameters(): any {
+	public getParameters(): ServiceParams {
 		return this.parameters;
 	}
 
-	public setParameters(params: any): void {
+	public setParameters(params: ServiceParams): void {
 		this.parameters = params;
 	}
 }

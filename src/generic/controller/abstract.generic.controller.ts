@@ -1,13 +1,11 @@
 import * as express from 'express';
-import { IGenericHandler } from '../handler/IGeneric.handler';
-import { IGenericService } from '../index.generic';
+import { IGenericService, ServiceParams } from '../index.generic';
 import { ControllerOption, IGenericController } from './IGeneric.controller';
-import { ValidationResult } from 'joi';
 
 export abstract class AbstractGenericController implements IGenericController {
 
 	protected service: IGenericService;
-	protected parameters: any = [];
+	protected parameters: ServiceParams = {};
 	protected option: ControllerOption;
 
 	constructor(s?: IGenericService, option?: ControllerOption) {
@@ -42,7 +40,7 @@ export abstract class AbstractGenericController implements IGenericController {
 		this.option = handler;
 	}
 
-	public getParameters(): any {
+	public getParameters(): ServiceParams {
 		return this.parameters;
 	}
 

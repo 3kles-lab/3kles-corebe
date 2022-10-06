@@ -1,6 +1,15 @@
 interface IGenericService {
 	execute(type: string, data: any): Promise<{ data: any, totalCount?: number }>;
-	getParameters(): any;
-	setParameters(param: any): void;
+	getParameters(): ServiceParams;
+	setParameters(param: ServiceParams): void;
 }
-export { IGenericService };
+
+type ServiceParams = {
+	[key: string] : {
+		path: string;
+		method: string;
+		option?: any
+	}
+};
+
+export { IGenericService, ServiceParams };
