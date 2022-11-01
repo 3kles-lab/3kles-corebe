@@ -5,6 +5,12 @@ const parameters: ServiceParams = {
 	listSelections: {
 		path: 'selections',
 		method: 'GET',
+		middlewares: [
+			(req, res, next) => {
+				console.log('hello');
+				next();
+			}
+		],
 		option: {
 			hostname: "localhost",
 			port: 12100,

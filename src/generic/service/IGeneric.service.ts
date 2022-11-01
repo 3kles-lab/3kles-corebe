@@ -8,7 +8,8 @@ type ServiceParams = {
 	[key: string] : {
 		path: string;
 		method: string;
-		option?: any
+		option?: any;
+		middlewares?: any[];
 	}
 };
 
