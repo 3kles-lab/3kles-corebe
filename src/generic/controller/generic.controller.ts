@@ -40,7 +40,7 @@ export class GenericController extends AbstractGenericController {
 	public updateParamFromRequest(type: string, req: express.Request): void { }
 
 	public setResponseHeader(res: express.Response, response: { data: any, totalCount?: number }): void {
-		if (Array.isArray(response.data)) {
+		if (response.totalCount) {
 			res.setHeader('Total-Count', response.totalCount);
 		}
 	}
