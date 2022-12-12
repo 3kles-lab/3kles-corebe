@@ -6,14 +6,18 @@ import * as morgan from 'morgan';
 import * as path from 'path';
 import * as cors from 'cors';
 import { AbstractGenericApp } from './abstract.generic.app';
-import { AbstractGenericRouter, ExtendableError, GenericRouter, HealthCheckService, HealthController } from '../../index';
+import { AbstractGenericRouter, ExtendableError, GenericHealth, GenericRouter, HealthCheckService, HealthController, IHealth } from '../../index';
+
 
 // Class to create an Express Server from CRUD router and optional port
 export class GenericApp extends AbstractGenericApp {
 	protected router: AbstractGenericRouter;
 	// constructor(public router: AbstractGenericRouter, port: number, private middleware?: string) {
-	constructor(public middleware?: string) {
+	constructor(public middleware?: string, public health?: IHealth) {
 		super();
+		if (!health) {
+			this.health = new GenericHealth();
+		}
 		this.initAppVariable();
 		this.initModule();
 		this.initRoute();
@@ -60,12 +64,14 @@ export class GenericApp extends AbstractGenericApp {
 	}
 
 	public initHealthCheck(): void {
-		this.app.use('/', new GenericRouter(new HealthController(new HealthCheckService({
-			healthcheck: {
-				path: 'healthcheck',
-				method: 'GET'
-			}
-		}))).router);
+		this.app.use('/', new GenericRouter(new HealthController(new HealthCheckService(
+			this.health,
+			{
+				healthcheck: {
+					path: 'healthcheck',
+					method: 'GET'
+				}
+			}))).router);
 	}
 
 	public initError(): void {
