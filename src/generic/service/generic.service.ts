@@ -6,9 +6,8 @@ export class GenericService extends AbstractGenericService {
 	protected apiUtils: IGenericAPI;
 
 	constructor(api: IGenericAPI, params?: ServiceParams) {
-		super();
+		super(params);
 		this.apiUtils = api;
-		if (params) this.parameters = params;
 	}
 
 	public async execute(type: string, data: any): Promise<any> {
@@ -18,7 +17,6 @@ export class GenericService extends AbstractGenericService {
 					(data.body && Object.keys(data.body).length>0) ? JSON.stringify(data.body) : null);
 				param.path = this.setParams(param.path, data.params);
 
-				console.log(param);
 				const response = await this.apiUtils.executeRequest(param);
 				return { data: response.body,
 					totalCount: response.headers['total-count'] || Array.isArray(response.body) ? response.body.length : 1
