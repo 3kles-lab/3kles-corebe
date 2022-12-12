@@ -1,11 +1,11 @@
 import * as express from 'express';
-import { ControllerOption, GenericService } from '../index.generic';
+import { ControllerOption, GenericService, IGenericService } from '../index.generic';
 import { AbstractGenericController } from './abstract.generic.controller';
 import { ExtendableError } from '../../utils/extendable-error';
 
 export class GenericController extends AbstractGenericController {
 
-	constructor(s?: GenericService, o?: ControllerOption) {
+	constructor(s?: IGenericService, o?: ControllerOption) {
 		super(s, o);
 	}
 

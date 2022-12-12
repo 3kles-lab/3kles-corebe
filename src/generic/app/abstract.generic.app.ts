@@ -25,6 +25,8 @@ export abstract class AbstractGenericApp implements IGenericApp {
 
 	public abstract initRoute(): void;
 
+	public abstract initHealthCheck(): void;
+
 	public abstract initError(): void;
 
 	public startApp(port?: number): void {
