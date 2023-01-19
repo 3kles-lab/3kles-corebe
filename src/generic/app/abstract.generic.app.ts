@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 import * as express from 'express';
+import { Server } from 'http';
 import { IGenericApp } from './IGenericApp';
 
 // Class to create an Express Server from CRUD router and optional port
@@ -29,13 +30,13 @@ export abstract class AbstractGenericApp implements IGenericApp {
 
 	public abstract initError(): void;
 
-	public startApp(port?: number): void {
+	public startApp(port?: number): Server {
 		let appPort: number = Number(process.env.PORT);
 		if (port) {
 			appPort = port;
 		}
 		if (appPort) {
-			this.app.listen(appPort || 3000, () => {
+			return this.app.listen(appPort || 3000, () => {
 				console.log('Service Generic listening on port ' + port);
 			});
 		}
