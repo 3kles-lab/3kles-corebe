@@ -19,7 +19,7 @@ const parameters: ServiceParams = {
 			rejectUnauthorized: false
 		}
 	},
-	getSelection:{
+	getSelection: {
 		path: 'selections/:id',
 		method: 'GET',
 		option: {
@@ -32,7 +32,8 @@ const parameters: ServiceParams = {
 	}
 };
 
-const app: GenericApp = new GenericApp('api');
+const middlewares = 'api'
+const app: GenericApp = new GenericApp(middlewares);
 const httpjsonapi: HttpApi = new HttpApi();
 httpjsonapi.setResponseParser(new JSONParser());
 httpjsonapi.setErrorParser(new JSONParser());
@@ -45,7 +46,7 @@ app.startApp(40001);
 const routes = [];
 app.getRouter().router.stack.forEach((m) => {
 	if (m.route) {
-		routes.push(Object.keys(m.route.methods) + " -> " + m.route.path);
+		routes.push(Object.keys(m.route.methods) + " -> " + middlewares + m.route.path);
 	}
 });
 
