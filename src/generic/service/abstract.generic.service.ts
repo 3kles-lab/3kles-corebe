@@ -18,5 +18,8 @@ export abstract class AbstractGenericService implements IGenericService {
 		this.parameters = params;
 	}
 
+	public setHeaders(type: string, headers: { [key: string]: string }): { [key: string]: string } {
+		return {};
+	}
 
 }
