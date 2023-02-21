@@ -32,7 +32,7 @@ const parameters: ServiceParams = {
 	}
 };
 
-const middlewares = 'api'
+const middlewares = 'api';
 const app: GenericApp = new GenericApp(middlewares);
 const httpjsonapi: HttpApi = new HttpApi();
 httpjsonapi.setResponseParser(new JSONParser());
