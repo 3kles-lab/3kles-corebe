@@ -13,9 +13,13 @@ export class GenericService extends AbstractGenericService {
 	public async execute(type: string, data: any): Promise<any> {
 		try {
 			if (this.parameters[type]) {
+				const query = data.query ? new URLSearchParams(data.query).toString() : '';
 				const param = this.apiUtils.buildRequest(this.parameters[type].option, null,
 					(data.body && Object.keys(data.body).length > 0) ? JSON.stringify(data.body) : null);
 				param.path = this.setParams(param.path, data.params);
+				if (query) {
+					param.path += `?${query}`;
+				}
 				param.headers = { ...param.headers, ...this.setHeaders(type, data.headers) };
 
 				const response = await this.apiUtils.executeRequest(param);

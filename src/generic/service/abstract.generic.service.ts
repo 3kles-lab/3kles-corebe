@@ -10,6 +10,7 @@ export abstract class AbstractGenericService implements IGenericService {
 
 	public abstract execute(type: string, data: any): Promise<{ data: any, totalCount?: number }>;
 
+
 	public getParameters(): ServiceParams {
 		return this.parameters;
 	}
