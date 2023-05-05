@@ -18,7 +18,7 @@ export class CRUDUtil {
 				}
 			},
 			get: {
-				path: route + '/:id',
+				path: route ? route + '/:id' : ':id',
 				method: 'GET',
 				option: {
 					path: path + '/:id',
@@ -37,7 +37,7 @@ export class CRUDUtil {
 			},
 			update: {
 				method: 'PUT',
-				path: route + '/:id',
+				path: route ? route + '/:id' : ':id',
 				option: {
 					path: path + '/:id',
 					method: 'PUT',
@@ -46,7 +46,7 @@ export class CRUDUtil {
 			},
 			delete: {
 				method: 'DELETE',
-				path: route + '/:id',
+				path: route ? route + '/:id' : ':id',
 				option: {
 					path: path + '/:id',
 					method: 'DELETE',
