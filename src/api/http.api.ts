@@ -22,7 +22,7 @@ export class HttpApi implements IGenericAPI {
 		if (params.protocol) {
 			this.protocol = params.protocol;
 		}
-		const options: IHttpOptions = {...params};
+		const options: IHttpOptions = { ...params };
 		if (data) {
 			options.data = data;
 		}
@@ -85,7 +85,12 @@ export class HttpApi implements IGenericAPI {
 	}
 
 	public processError(error: any): any {
-		return (this.errorParser) ? this.errorParser.parseResponse(error) : error;
+		try {
+			return (this.errorParser) ? this.errorParser.parseResponse(error) : error;
+		} catch (err) {
+			return err;
+		}
+
 	}
 
 	public beforeExecute(): void {
