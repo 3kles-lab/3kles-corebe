@@ -1,5 +1,6 @@
 export class CRUDUtil {
 	public static generate(route: string, hostname: string, port: number, path: string): ({ [key: string]: any }) {
+		route += route.endsWith("/") ? "" : "/";
 		const option = {
 			hostname,
 			port,
@@ -18,7 +19,7 @@ export class CRUDUtil {
 				}
 			},
 			get: {
-				path: route ? route + '/:id' : ':id',
+				path: route + ':id',
 				method: 'GET',
 				option: {
 					path: path + '/:id',
@@ -37,7 +38,7 @@ export class CRUDUtil {
 			},
 			update: {
 				method: 'PUT',
-				path: route ? route + '/:id' : ':id',
+				path: route + ':id',
 				option: {
 					path: path + '/:id',
 					method: 'PUT',
@@ -46,7 +47,7 @@ export class CRUDUtil {
 			},
 			delete: {
 				method: 'DELETE',
-				path: route ? route + '/:id' : ':id',
+				path: route + ':id',
 				option: {
 					path: path + '/:id',
 					method: 'DELETE',
