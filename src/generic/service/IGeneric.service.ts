@@ -11,6 +11,7 @@ type ServiceParams = {
 		method: string;
 		option?: any;
 		middlewares?: any[];
+		headerKeys?: string[];
 	}
 };
 

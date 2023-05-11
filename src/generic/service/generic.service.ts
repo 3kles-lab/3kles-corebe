@@ -20,7 +20,12 @@ export class GenericService extends AbstractGenericService {
 				if (query) {
 					param.path += `?${query}`;
 				}
-				param.headers = { ...param.headers, ...this.setHeaders(type, data.headers) };
+
+				param.headers = {
+					...param.headers,
+					...(this.parameters[type].headerKeys && this.parameters[type].headerKeys.filter((key) => data.headers[key]).map((key) => ({ [key]: data.headers[key] })).reduce((a, b) => ({ ...a, ...b }), {})),
+					...this.setHeaders(type, data.headers)
+				};
 
 				const response = await this.apiUtils.executeRequest(param);
 				return {
