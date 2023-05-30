@@ -5,6 +5,7 @@ import * as express from 'express';
 import * as morgan from 'morgan';
 import * as path from 'path';
 import * as cors from 'cors';
+import logger from 'pino-http';
 import { AbstractGenericApp } from './abstract.generic.app';
 import { AbstractGenericRouter, ExtendableError, GenericHealth, GenericRouter, HealthCheckService, HealthController, IHealth } from '../../index';
 
@@ -35,6 +36,8 @@ export class GenericApp extends AbstractGenericApp {
 	}
 
 	public initModule(): void {
+		this.app.use(logger());
+
 		// Use bodyparser to help to communicate with json
 		this.app.use('/', express.static(path.join(__dirname, '../public')));
 		this.app.use(bodyParser.json());

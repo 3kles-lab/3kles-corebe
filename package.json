@@ -1,6 +1,6 @@
 {
   "name": "@3kles/3kles-corebe",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "3KLES Core BackEnd",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -41,7 +41,8 @@
     "joi": "^17.6.2",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "pino-http": "^8.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
