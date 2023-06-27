@@ -17,7 +17,7 @@ export class GenericService extends AbstractGenericService {
 				if (!this.parameters[type].option?.path) {
 					this.parameters[type].option.path = this.parameters[type].path;
 				}
-				const param = this.apiUtils.buildRequest(this.parameters[type].option, null,
+				const param = this.apiUtils.buildRequest(this.parameters[type].option, data.params,
 					(data.body && Object.keys(data.body).length > 0) ? JSON.stringify(data.body) : null);
 				param.path = this.setParams(param.path, data.params);
 				if (query) {
