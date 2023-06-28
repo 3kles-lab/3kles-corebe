@@ -16,7 +16,7 @@ export class HttpApi implements IGenericAPI {
 	}
 
 	// Function to create options request data
-	public buildRequest(params: IHttpOptions, id?: any, data?: string): any {
+	public buildRequest(params: IHttpOptions, originDataRequest?: any, data?: string): any {
 		// console.log("Parameters:", params);
 		// Create options request
 		if (params.protocol) {
