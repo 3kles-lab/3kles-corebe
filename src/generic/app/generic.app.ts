@@ -33,11 +33,13 @@ export class GenericApp extends AbstractGenericApp {
 		this.app.set('COMPRESSION', process.env.COMPRESSION || true);
 		this.app.set('SECURE_ROUTE', process.env.SECURE_ROUTE || false);
 		this.app.set('CORS', process.env.CORS || true);
+		this.app.set('PINO', process.env.PINO || false);
 	}
 
 	public initModule(): void {
-		this.app.use(logger());
-
+		if (this.app.get('PINO') === 'true') {
+			this.app.use(logger());
+		}
 		// Use bodyparser to help to communicate with json
 		this.app.use('/', express.static(path.join(__dirname, '../public')));
 		this.app.use(bodyParser.json());

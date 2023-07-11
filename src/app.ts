@@ -13,8 +13,8 @@ const parameters: ServiceParams = {
 		],
 		option: {
 			hostname: "localhost",
-			port: 12100,
-			path: "/selections",
+			port: 4000,
+			path: "/MNS150MI/GetUserData",
 			method: "GET",
 			rejectUnauthorized: false
 		}

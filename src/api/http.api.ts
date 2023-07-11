@@ -81,7 +81,9 @@ export class HttpApi implements IGenericAPI {
 	}
 
 	public processResponse(response: any): any {
-		return (this.responseParser) ? this.responseParser.parseResponse(response) : response;
+		if(response.length){
+			return (this.responseParser) ? this.responseParser.parseResponse(response) : response;
+		}
 	}
 
 	public processError(error: any): any {
