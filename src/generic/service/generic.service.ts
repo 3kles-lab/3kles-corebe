@@ -1,4 +1,5 @@
 import { IGenericAPI } from '../../api/IGenericAPI';
+import { ExtendableError } from '../../utils/extendable-error';
 import { AbstractGenericService } from './abstract.generic.service';
 import { ServiceParams } from './IGeneric.service';
 
@@ -37,7 +38,8 @@ export class GenericService extends AbstractGenericService {
 				};
 			}
 		} catch (e) {
-			throw e;
+			// throw e;
+			throw new ExtendableError(e.body?.error, e.statusCode);
 		}
 	}
 
