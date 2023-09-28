@@ -2,6 +2,7 @@ import { IGenericAPI } from '../../api/IGenericAPI';
 import { ExtendableError } from '../../utils/extendable-error';
 import { AbstractGenericService } from './abstract.generic.service';
 import { ServiceParams } from './IGeneric.service';
+import * as querystring from 'node:querystring';
 
 export class GenericService extends AbstractGenericService {
 	protected apiUtils: IGenericAPI;
@@ -14,7 +15,7 @@ export class GenericService extends AbstractGenericService {
 	public async execute(type: string, data: any): Promise<any> {
 		try {
 			if (this.parameters[type]) {
-				const query = data.query ? new URLSearchParams(data.query).toString() : '';
+				const query = data.query ? querystring.stringify(data.query) : '';
 				if (!this.parameters[type].option?.path) {
 					this.parameters[type].option.path = this.parameters[type].path;
 				}
