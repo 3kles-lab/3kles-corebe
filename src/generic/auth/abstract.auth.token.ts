@@ -2,11 +2,20 @@ import * as blacklist from 'express-jwt-blacklist';
 import * as express from 'express';
 import { IAuth } from "./IAuth";
 
+export interface IRefreshTokenModel {
+    usid: string;
+    token: string;
+    // refreshToken: string;
+    isActive: boolean;
+    expiresAt: number;
+    createdByIp?: string;
+}
 export abstract class AbstractAuthToken implements IAuth {
 
 	protected parameters: any;
 	protected secretKey: string;
 	protected expiredTime: string | number;
+	protected listToken: IRefreshTokenModel[] = [];
 
 	constructor(params?: any) {
 		if (params) {
@@ -17,6 +26,7 @@ export abstract class AbstractAuthToken implements IAuth {
 		this.authenticate = this.authenticate.bind(this);
 		this.checkAuth = this.checkAuth.bind(this);
 		this.revokeAuth = this.revokeAuth.bind(this);
+		this.refreshToken = this.refreshToken.bind(this);
 	}
 
 	public abstract authenticate(req: express.Request, res: express.Response, next: express.NextFunction): Promise<any>;
@@ -25,5 +35,7 @@ export abstract class AbstractAuthToken implements IAuth {
 	public revokeAuth(req: express.Request, res: express.Response, next: express.NextFunction): void {
 		// blacklist.revoke(req.user);
 	}
+
+	public abstract refreshToken(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void>;
 
 }

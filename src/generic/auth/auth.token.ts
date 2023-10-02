@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
 import { AbstractAuthToken } from "./abstract.auth.token";
-
+import * as crypto from 'crypto';
 export class AuthToken extends AbstractAuthToken {
 
 	public async authenticate(req: express.Request, res: express.Response, next: express.NextFunction): Promise<any> {
@@ -27,5 +27,9 @@ export class AuthToken extends AbstractAuthToken {
 		} else {
 			res.status(403).send({ success: false, message: "No token." });
 		}
+	}
+
+	public async refreshToken(req: express.Request, res: express.Response, next: express.NextFunction): Promise<any> {
+		return res.status(200).json({ refreshToken: crypto.randomBytes(64).toString('hex') });
 	}
 }
