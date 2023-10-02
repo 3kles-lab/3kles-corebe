@@ -3,12 +3,12 @@ import * as express from 'express';
 import { IAuth } from "./IAuth";
 
 export interface IRefreshTokenModel {
-    usid: string;
-    token: string;
-    // refreshToken: string;
-    isActive: boolean;
-    expiresAt: number;
-    createdByIp?: string;
+	usid: string;
+	token: string;
+	// refreshToken: string;
+	isActive: boolean;
+	expiresAt: number;
+	createdByIp?: string;
 }
 export abstract class AbstractAuthToken implements IAuth {
 
