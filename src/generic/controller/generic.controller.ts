@@ -6,6 +6,11 @@ import { ExtendableError } from '../../utils/extendable-error';
 export class GenericController extends AbstractGenericController {
 
 	constructor(s?: IGenericService, o?: ControllerOption) {
+		if (!o.formatResponse) {
+			o.formatResponse = (type, req, res, data) => {
+				return data;
+			}
+		}
 		super(s, o);
 	}
 
@@ -21,15 +26,19 @@ export class GenericController extends AbstractGenericController {
 					}
 				}
 
-				req.query.per_page = req.query.per_page && +req.query.per_page >= 0 ? req.query.per_page : '0';
-				req.query.page = req.query.page && +req.query.page > 0 ? req.query.page : '1';
+				if (this.option.formatRequest) {
+					this.option.formatRequest(type, req);
+				} else {
+					req.query.per_page = req.query.per_page && +req.query.per_page >= 0 ? req.query.per_page : '0';
+					req.query.page = req.query.page && +req.query.page > 0 ? req.query.page : '1';
+				}
 
 				const response = await this.service.execute(type, req);
 				if (!response) throw new ExtendableError(type + '-not-found', 404);
 
 				this.setResponseHeader(res, response);
 
-				res.json(this.parseResponse(response.data, type));
+				res.json(this.option.formatResponse(type, req, res, this.parseResponse(response.data, type)));
 			} catch (err) {
 				next(err);
 			}

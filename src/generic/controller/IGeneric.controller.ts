@@ -19,6 +19,8 @@ interface IGenericController {
 type ControllerOption = {
 	handler?: IGenericHandler;
 	validation?: (type: string, data: any) => Partial<ValidationResult>;
+	formatRequest?: (type: string, req: express.Request) => void;
+	formatResponse?: (type: string, req: express.Request, res: express.Response, data: any) => any;
 };
 
 export { IGenericController, ControllerOption };
