@@ -6,9 +6,12 @@ import { ExtendableError } from '../../utils/extendable-error';
 export class GenericController extends AbstractGenericController {
 
 	constructor(s?: IGenericService, o?: ControllerOption) {
-		if (!o.formatResponse) {
-			o.formatResponse = (type, req, res, data) => {
-				return data;
+		if (!o?.formatResponse) {
+			o = {
+				...o,
+				formatResponse: (type, req, res, data) => {
+					return data;
+				}
 			};
 		}
 		super(s, o);
