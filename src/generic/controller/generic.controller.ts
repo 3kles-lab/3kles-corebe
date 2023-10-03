@@ -9,7 +9,7 @@ export class GenericController extends AbstractGenericController {
 		if (!o.formatResponse) {
 			o.formatResponse = (type, req, res, data) => {
 				return data;
-			}
+			};
 		}
 		super(s, o);
 	}
