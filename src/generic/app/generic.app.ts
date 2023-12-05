@@ -91,13 +91,7 @@ export class GenericApp extends AbstractGenericApp {
 	}
 
 	public addRoute(router: express.Router, m?: any): void {
-		if (m) {
-			this.app.use('/' + m, router);
-		} else if (this.middleware) {
-			this.app.use('/' + this.middleware, router);
-		} else {
-			this.app.use('/', router);
-		}
+		this.app.use(`/${[this.middleware, m].filter(n => n && n.length).join('/')}`, router);
 		this.initError();
 	}
 
