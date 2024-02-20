@@ -14,7 +14,10 @@ import { AbstractGenericRouter, ExtendableError, GenericHealth, GenericRouter, H
 export class GenericApp extends AbstractGenericApp {
 	protected router: AbstractGenericRouter;
 	// constructor(public router: AbstractGenericRouter, port: number, private middleware?: string) {
-	constructor(public middleware?: string, public health?: IHealth) {
+	constructor(public middleware?: string, public health?: IHealth, public option?: {
+		limit?: string | number | undefined,
+		extended?: boolean
+	}) {
 		super();
 		if (!health) {
 			this.health = new GenericHealth();
@@ -42,8 +45,8 @@ export class GenericApp extends AbstractGenericApp {
 		}
 		// Use bodyparser to help to communicate with json
 		this.app.use('/', express.static(path.join(__dirname, '../public')));
-		this.app.use(bodyParser.json());
-		this.app.use(bodyParser.urlencoded({ extended: false }));
+		this.app.use(bodyParser.json({ limit: this.option?.limit }));
+		this.app.use(bodyParser.urlencoded({ limit: this.option?.limit, extended: this.option?.extended || false }));
 
 		// Morgan to log
 		if (this.app.get('LOG') === 'true') {
