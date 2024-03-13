@@ -1,6 +1,6 @@
 {
   "name": "@3kles/3kles-corebe",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "description": "3KLES Core BackEnd",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

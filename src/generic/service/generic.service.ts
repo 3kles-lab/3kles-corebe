@@ -46,7 +46,7 @@ export class GenericService extends AbstractGenericService {
 
 	public setParams(path: string, params: { [key: string]: any }): string {
 		Object.keys(params).forEach(key => {
-			path = path.replace(`:${key}`, params[key]);
+			path = path.replace(`:${key}`, encodeURIComponent(params[key]));
 		});
 		return path;
 	}
