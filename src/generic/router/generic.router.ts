@@ -1,12 +1,13 @@
 import { AbstractGenericRouter } from './index.generic.router';
 import { IGenericController } from '../controller/index.generic.controller';
 import { GenericHandler } from '../handler/generic.handler';
+import { RouterOptions } from 'express';
 
 // Class to create a router from a GenericController
 export class GenericRouter extends AbstractGenericRouter {
 
-	constructor(controller?: IGenericController) {
-		super();
+	constructor(controller?: IGenericController, options?: RouterOptions) {
+		super(options);
 		if (controller) {
 			this.addController(controller);
 		}
