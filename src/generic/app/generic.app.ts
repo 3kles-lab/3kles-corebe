@@ -31,16 +31,16 @@ export class GenericApp extends AbstractGenericApp {
 
 	public initAppVariable(): void {
 		this.app.set('PORT', process.env.PORT || this.app.get('PORT'));
-		this.app.set('LOG', process.env.LOG || false);
-		this.app.set('HELMET', process.env.HELMET || true);
-		this.app.set('COMPRESSION', process.env.COMPRESSION || true);
-		this.app.set('SECURE_ROUTE', process.env.SECURE_ROUTE || false);
-		this.app.set('CORS', process.env.CORS || true);
-		this.app.set('PINO', process.env.PINO || false);
+		this.app.set('LOG', process.env.LOG === 'true' || false);
+		this.app.set('HELMET', process.env.HELMET === 'true' || true);
+		this.app.set('COMPRESSION', process.env.COMPRESSION === 'true' || true);
+		this.app.set('SECURE_ROUTE', process.env.SECURE_ROUTE === 'true' || false);
+		this.app.set('CORS', process.env.CORS === 'true' || true);
+		this.app.set('PINO', process.env.PINO === 'true' || false);
 	}
 
 	public initModule(): void {
-		if (this.app.get('PINO') === 'true') {
+		if (this.app.get('PINO')) {
 			this.app.use(logger());
 		}
 		// Use bodyparser to help to communicate with json
@@ -49,18 +49,18 @@ export class GenericApp extends AbstractGenericApp {
 		this.app.use(bodyParser.urlencoded({ limit: this.option?.limit, extended: this.option?.extended || false }));
 
 		// Morgan to log
-		if (this.app.get('LOG') === 'true') {
+		if (this.app.get('LOG')) {
 			this.app.use(morgan('dev'));
 		}
 		// Secure App
-		if (this.app.get('HELMET') === 'true') {
+		if (this.app.get('HELMET')) {
 			this.app.use(helmet());
 		}
 		// Compress request
-		if (this.app.get('COMPRESSION') === 'true') {
+		if (this.app.get('COMPRESSION')) {
 			this.app.use(compression());
 		}
-		if (this.app.get('CORS') === 'true') {
+		if (this.app.get('CORS')) {
 			this.app.use(cors());
 		}
 	}
