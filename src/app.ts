@@ -46,7 +46,7 @@ app.startApp(40001);
 const routes = [];
 app.getRouter().router.stack.forEach((m) => {
 	if (m.route) {
-		routes.push(Object.keys(m.route.methods) + " -> " + middlewares + m.route.path);
+		// routes.push(Object.keys(m.route.methods) + " -> " + middlewares + m.route.path);
 	}
 });
 
