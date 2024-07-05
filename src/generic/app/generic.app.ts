@@ -31,12 +31,12 @@ export class GenericApp extends AbstractGenericApp {
 
 	public initAppVariable(): void {
 		this.app.set('PORT', process.env.PORT || this.app.get('PORT'));
-		this.app.set('LOG', process.env.LOG === 'true' || false);
-		this.app.set('HELMET', process.env.HELMET === 'true' || true);
-		this.app.set('COMPRESSION', process.env.COMPRESSION === 'true' || true);
-		this.app.set('SECURE_ROUTE', process.env.SECURE_ROUTE === 'true' || false);
-		this.app.set('CORS', process.env.CORS === 'true' || true);
-		this.app.set('PINO', process.env.PINO === 'true' || false);
+		this.app.set('LOG', process.env.LOG ? process.env.LOG === 'true' : false);
+		this.app.set('HELMET', process.env.HELMET ? process.env.HELMET === 'true' : true);
+		this.app.set('COMPRESSION', process.env.COMPRESSION ? process.env.COMPRESSION === 'true' : true);
+		this.app.set('SECURE_ROUTE', process.env.SECURE_ROUTE ? process.env.SECURE_ROUTE === 'true' : false);
+		this.app.set('CORS', process.env.CORS ? process.env.CORS === 'true' : true);
+		this.app.set('PINO', process.env.PINO ? process.env.PINO === 'true' : false);
 	}
 
 	public initModule(): void {
