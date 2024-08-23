@@ -63,7 +63,7 @@ module.exports = {
   externals: {
     mongoose: "commonjs mongoose", // Exclude mongoose from the bundle
     express: "commonjs express", // Exclude express from the bundle
-    dotenv: 'commonjs dotenv'  // Exclude dotenv from the bundle
+    // dotenv: 'commonjs dotenv'  // Exclude dotenv from the bundle
   },
   performance: {
     hints: false, // Disable all performance hints to suppress warnings about large bundles
