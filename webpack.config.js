@@ -1,4 +1,3 @@
-const webpack = require("webpack");
 const path = require("path");
 const CompressionPlugin = require("compression-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
@@ -23,21 +22,6 @@ module.exports = {
   },
   resolve: {
     extensions: [".ts", ".js"], // Resolve these extensions
-    fallback: {
-      crypto: require.resolve("crypto-browserify"),
-      stream: require.resolve("stream-browserify"),
-      https: require.resolve("https-browserify"),
-      http: require.resolve("stream-http"),
-      zlib: require.resolve("browserify-zlib"),
-      os: require.resolve("os-browserify/browser"),
-      vm: require.resolve("vm-browserify"),
-      querystring: require.resolve("querystring-es3"),
-      url: require.resolve("url/"),
-      assert: require.resolve("assert/"),
-      fs: false,
-      net: false,
-      tls: false,
-    },
   },
   optimization: {
     minimize: true, // Minimize the output bundle
@@ -52,18 +36,9 @@ module.exports = {
       reportFilename: path.resolve(__dirname, "report.html"), // Root directory
       openAnalyzer: false, // Prevent the analyzer from opening automatically
     }),
-    new webpack.ProvidePlugin({
-      process: "process/browser", // Provide a polyfill for process in browser
-      Buffer: ["buffer", "Buffer"], // Polyfill for Buffer object
-    }),
-    new webpack.DefinePlugin({
-      'process.env': 'process.env'  //Don't override dotenv
-    }),
   ],
   externals: {
-    mongoose: "commonjs mongoose", // Exclude mongoose from the bundle
     express: "commonjs express", // Exclude express from the bundle
-    // dotenv: 'commonjs dotenv'  // Exclude dotenv from the bundle
   },
   performance: {
     hints: false, // Disable all performance hints to suppress warnings about large bundles
