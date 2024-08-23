@@ -56,10 +56,14 @@ module.exports = {
       process: "process/browser", // Provide a polyfill for process in browser
       Buffer: ["buffer", "Buffer"], // Polyfill for Buffer object
     }),
+    new webpack.DefinePlugin({
+      'process.env': 'process.env'  //Don't override dotenv
+    }),
   ],
   externals: {
     mongoose: "commonjs mongoose", // Exclude mongoose from the bundle
     express: "commonjs express", // Exclude express from the bundle
+    dotenv: 'commonjs dotenv'  // Exclude dotenv from the bundle
   },
   performance: {
     hints: false, // Disable all performance hints to suppress warnings about large bundles
