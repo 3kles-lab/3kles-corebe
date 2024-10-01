@@ -23,4 +23,8 @@ export abstract class AbstractGenericService implements IGenericService {
 		return {};
 	}
 
+	public setCustomHeaders(type: string, data: any): { [key: string]: string } {
+		return {};
+	}
+
 }

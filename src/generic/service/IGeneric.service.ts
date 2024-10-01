@@ -3,6 +3,7 @@ interface IGenericService {
 	getParameters(): ServiceParams;
 	setParameters(param: ServiceParams): void;
 	setHeaders(type: string, headers: { [key: string]: string }): { [key: string]: string };
+	setCustomHeaders(type: string, data: any): { [key: string]: string };
 }
 
 type ServiceParams = {
