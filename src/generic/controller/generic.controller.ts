@@ -21,7 +21,7 @@ export class GenericController extends AbstractGenericController {
 		return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			try {
 				const abortController = new AbortController();
-				req.on('close', () => {
+				req.on('aborted', () => {
 					abortController.abort();
 				});
 
