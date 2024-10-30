@@ -30,7 +30,7 @@ export class HttpApi implements IGenericAPI {
 	}
 
 	// Function to execute request and manage response
-	public async executeRequest(options: any): Promise<{ statusCode: number, headers: any, body: any }> {
+	public async executeRequest(options: any, requestOption?: { signal?: AbortSignal }): Promise<{ statusCode: number, headers: any, body: any }> {
 		return new Promise((resolve, reject) => {
 			this.beforeExecute();
 
@@ -61,12 +61,12 @@ export class HttpApi implements IGenericAPI {
 
 			let req;
 			if (this.protocol === 'https') {
-				req = https.request(options, callback.bind(this)).on('error', (err) => {
+				req = https.request({ ...options, ...(requestOption?.signal && { signal: requestOption?.signal }) }, callback.bind(this)).on('error', (err) => {
 					console.error(err);
 					reject({ statusCode: 500, body: err, headers: {} });
 				});
 			} else {
-				req = http.request(options, callback.bind(this)).on('error', (err) => {
+				req = http.request({ ...options, ...(requestOption?.signal && { signal: requestOption?.signal }) }, callback.bind(this)).on('error', (err) => {
 					console.error(err);
 					reject({ statusCode: 500, body: err, headers: {} });
 				});
@@ -81,7 +81,7 @@ export class HttpApi implements IGenericAPI {
 	}
 
 	public processResponse(response: any): any {
-		if(response.length){
+		if (response.length) {
 			return (this.responseParser) ? this.responseParser.parseResponse(response) : response;
 		}
 	}

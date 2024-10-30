@@ -1,4 +1,4 @@
-import { IGenericService, ServiceParams } from './IGeneric.service';
+import { IGenericService, ExecuteOption, ServiceParams } from './IGeneric.service';
 
 export abstract class AbstractGenericService implements IGenericService {
 
@@ -8,7 +8,7 @@ export abstract class AbstractGenericService implements IGenericService {
 		if (params) this.parameters = params;
 	}
 
-	public abstract execute(type: string, data: any): Promise<{ data: any, totalCount?: number }>;
+	public abstract execute(type: string, data: any, option?: ExecuteOption): Promise<{ data: any, totalCount?: number }>;
 
 
 	public getParameters(): ServiceParams {

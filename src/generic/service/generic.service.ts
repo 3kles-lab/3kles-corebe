@@ -1,7 +1,7 @@
 import { IGenericAPI } from '../../api/IGenericAPI';
 import { ExtendableError } from '../../utils/extendable-error';
 import { AbstractGenericService } from './abstract.generic.service';
-import { ServiceParams } from './IGeneric.service';
+import { ExecuteOption, ServiceParams } from './IGeneric.service';
 import { stringify } from 'querystring';
 
 export class GenericService extends AbstractGenericService {
@@ -12,7 +12,7 @@ export class GenericService extends AbstractGenericService {
 		this.apiUtils = api;
 	}
 
-	public async execute(type: string, data: any): Promise<any> {
+	public async execute(type: string, data: any, option?: ExecuteOption): Promise<any> {
 		try {
 			if (this.parameters[type]) {
 				const query = data.query ? stringify(data.query) : '';
@@ -33,7 +33,7 @@ export class GenericService extends AbstractGenericService {
 					...this.setCustomHeaders(type, data),
 				};
 
-				const response = await this.apiUtils.executeRequest(param);
+				const response = await this.apiUtils.executeRequest(param, { signal: option?.abortSignal });
 				return {
 					data: response.body,
 					totalCount: response.headers['total-count'] || (Array.isArray(response.body) ? response.body.length : 1)
