@@ -19,12 +19,14 @@ export class GenericController extends AbstractGenericController {
 
 	public execute(type: string): any {
 		return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			try {
-				const abortController = new AbortController();
-				req.on('aborted', () => {
-					abortController.abort();
-				});
+			const abortController = new AbortController();
+			const signal = abortController.signal;
+			const abortHandler = () => {
+				abortController.abort();
+			};
 
+			req.on('aborted', abortHandler);
+			try {
 				this.updateParamFromRequest(type, req);
 
 				if (this.option?.validation) {
@@ -41,7 +43,7 @@ export class GenericController extends AbstractGenericController {
 					req.query.page = req.query.page && +req.query.page > 0 ? req.query.page : '1';
 				}
 
-				const response = await this.service.execute(type, req, { abortSignal: abortController.signal });
+				const response = await this.service.execute(type, req, { abortSignal: signal });
 				if (!response) throw new ExtendableError(type + '-not-found', 404);
 
 				this.setResponseHeader(res, response);
@@ -49,6 +51,8 @@ export class GenericController extends AbstractGenericController {
 				res.json(this.option.formatResponse(type, req, res, this.parseResponse(response.data, type)));
 			} catch (err) {
 				next(err);
+			} finally {
+				req.off('aborted', abortHandler);
 			}
 		};
 	}
