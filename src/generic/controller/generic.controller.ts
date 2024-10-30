@@ -25,7 +25,7 @@ export class GenericController extends AbstractGenericController {
 				abortController.abort();
 			};
 
-			req.on('aborted', abortHandler);
+			req.socket.once('close', abortHandler);
 			try {
 				this.updateParamFromRequest(type, req);
 
@@ -51,8 +51,6 @@ export class GenericController extends AbstractGenericController {
 				res.json(this.option.formatResponse(type, req, res, this.parseResponse(response.data, type)));
 			} catch (err) {
 				next(err);
-			} finally {
-				req.off('aborted', abortHandler);
 			}
 		};
 	}
