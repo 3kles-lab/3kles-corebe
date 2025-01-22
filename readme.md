@@ -35,7 +35,7 @@ In this module there is a class **HttpApi** that implement **IGenericApi** to ma
 
 - **execute**: Method to execute request from type
 - **setService**:Method to set **IGenericService**
-- **getParameters**:Method to get service parameters
+- **getServiceParams**:Method to get service parameters
 - **updateParamFromRequest**:Method to update controller parameters from request
 
 ## Service
@@ -43,4 +43,4 @@ In this module there is a class **HttpApi** that implement **IGenericApi** to ma
 **IGenericService** is an interface defined as below:
 
 - **execute**: Method to execute request from parameters
-- **getParameters**:Method to get service parameters
+- **getServiceParams**: Method to get service parameters

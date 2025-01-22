@@ -11,8 +11,8 @@ interface IGenericController {
 	setOption(option: any): void;
 	updateParamFromRequest(type: string, req: express.Request): void;
 	parseResponse(response: any, type?: string): any;
-	getParameters(): ServiceParams;
-	setParameters(params: ServiceParams): void;
+	getServiceParams(): ServiceParams;
+	setServiceParams(params: ServiceParams): void;
 	setResponseHeader(res: express.Response, response: { data: any, totalCount?: number }): void;
 }
 
