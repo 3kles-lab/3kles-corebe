@@ -8,25 +8,33 @@ import * as cors from 'cors';
 import logger from 'pino-http';
 import { AbstractGenericApp } from './abstract.generic.app';
 import { AbstractGenericRouter, ExtendableError, GenericHealth, GenericRouter, HealthCheckService, HealthController, IHealth } from '../../index';
+import { GenericLogger, ILogger } from '../logger';
 
 
 // Class to create an Express Server from CRUD router and optional port
 export class GenericApp extends AbstractGenericApp {
 	protected router: AbstractGenericRouter;
+	protected genericLogger: ILogger;
 	// constructor(public router: AbstractGenericRouter, port: number, private middleware?: string) {
 	constructor(public middleware?: string, public health?: IHealth, public option?: {
 		limit?: string | number | undefined,
-		extended?: boolean
+		extended?: boolean,
+		logger?: ILogger
 	}) {
 		super();
 		if (!health) {
 			this.health = new GenericHealth();
 		}
+		this.genericLogger = option?.logger ? option.logger : new GenericLogger();
 		this.initAppVariable();
 		this.initModule();
 		this.initRoute();
 		this.initHealthCheck();
 		this.initError();
+	}
+
+	public get logger(): ILogger {
+		return this.genericLogger;
 	}
 
 	public initAppVariable(): void {

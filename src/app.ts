@@ -52,3 +52,8 @@ app.getRouter().router.stack.forEach((m) => {
 
 console.log(JSON.stringify(routes, null, 4));
 module.exports = app.getApp(); // For Mocha Testing
+
+app.logger.trace('test logger info');
+app.logger.info({ err: new Error('test logger error'), test: true });
+app.logger.debug('test logger debug');
+app.logger.warn('test logger warn');
