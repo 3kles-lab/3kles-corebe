@@ -1,10 +1,9 @@
-import { collectDefaultMetrics, Histogram, Metric, Registry } from "prom-client";
+import { collectDefaultMetrics, Metric, Registry } from "prom-client";
 import { IMetricRegistry } from "./registry.interface";
 
 export class GenericMetric implements IMetricRegistry {
 
     private register: Registry;
-    private httpHistogram: Histogram;
 
     constructor(labels?: { [key: string]: string }) {
         this.register = new Registry();
