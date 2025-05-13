@@ -7,34 +7,44 @@ import * as path from 'path';
 import * as cors from 'cors';
 import logger from 'pino-http';
 import { AbstractGenericApp } from './abstract.generic.app';
-import { AbstractGenericRouter, ExtendableError, GenericHealth, GenericRouter, HealthCheckService, HealthController, IHealth } from '../../index';
+import { AbstractGenericRouter, ExtendableError, GenericHealth, GenericMetric, GenericRouter, HealthCheckService, HealthController, IHealth, IMetricRegistry, MetricController, MetricService } from '../../index';
 import { GenericLogger, ILogger } from '../logger';
+import { collectDefaultMetrics, Histogram, Registry } from 'prom-client';
+
 
 
 // Class to create an Express Server from CRUD router and optional port
 export class GenericApp extends AbstractGenericApp {
 	protected router: AbstractGenericRouter;
 	protected genericLogger: ILogger;
+	protected genericMetricRegister: IMetricRegistry;
 	// constructor(public router: AbstractGenericRouter, port: number, private middleware?: string) {
 	constructor(public middleware?: string, public health?: IHealth, public option?: {
 		limit?: string | number | undefined,
 		extended?: boolean,
-		logger?: ILogger
+		logger?: ILogger,
+		metricRegister?: IMetricRegistry
 	}) {
 		super();
 		if (!health) {
 			this.health = new GenericHealth();
 		}
 		this.genericLogger = option?.logger ? option.logger : new GenericLogger();
+		this.genericMetricRegister = option?.metricRegister ? option?.metricRegister : new GenericMetric();
 		this.initAppVariable();
 		this.initModule();
 		this.initRoute();
 		this.initHealthCheck();
+		this.initMetrics();
 		this.initError();
 	}
 
 	public get logger(): ILogger {
 		return this.genericLogger;
+	}
+
+	public get metricRgister(): IMetricRegistry {
+		return this.genericMetricRegister;
 	}
 
 	public initAppVariable(): void {
@@ -85,6 +95,17 @@ export class GenericApp extends AbstractGenericApp {
 			{
 				healthcheck: {
 					path: 'healthcheck',
+					method: 'GET'
+				}
+			}))).router);
+	}
+
+	public initMetrics() {
+		this.app.use('/', new GenericRouter(new MetricController(new MetricService(
+			this.genericMetricRegister,
+			{
+				metrics: {
+					path: 'metrics',
 					method: 'GET'
 				}
 			}))).router);

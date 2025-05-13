@@ -6,3 +6,4 @@ export * from './app/index.generic.app';
 export * from './handler/index.generic.handler';
 export * from './health/index';
 export * from './logger/index';
+export * from './metric/index';
