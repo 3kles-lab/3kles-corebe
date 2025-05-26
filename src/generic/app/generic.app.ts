@@ -9,8 +9,6 @@ import logger from 'pino-http';
 import { AbstractGenericApp } from './abstract.generic.app';
 import { AbstractGenericRouter, ExtendableError, GenericHealth, GenericMetric, GenericRouter, HealthCheckService, HealthController, IHealth, IMetricRegistry, MetricController, MetricService } from '../../index';
 import { GenericLogger, ILogger } from '../logger';
-import { collectDefaultMetrics, Histogram, Registry } from 'prom-client';
-
 
 
 // Class to create an Express Server from CRUD router and optional port
@@ -33,9 +31,9 @@ export class GenericApp extends AbstractGenericApp {
 		this.genericMetricRegister = option?.metricRegister ? option?.metricRegister : new GenericMetric();
 		this.initAppVariable();
 		this.initModule();
-		this.initRoute();
 		this.initHealthCheck();
 		this.initMetrics();
+		this.initRoute();
 		this.initError();
 	}
 
@@ -109,6 +107,10 @@ export class GenericApp extends AbstractGenericApp {
 					method: 'GET'
 				}
 			}))).router);
+
+		if (this.genericMetricRegister?.collect) {
+			this.app.use(this.genericMetricRegister.collect());
+		}
 	}
 
 	public initError(): void {
