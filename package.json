@@ -1,12 +1,12 @@
 {
   "name": "@3kles/3kles-corebe",
-  "version": "4.2.1",
+  "version": "4.2.2",
   "description": "3KLES Core BackEnd",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "http://gitlab.3kles.local/c3kles/lib/corejs/3kles-corebe/"
+    "url": "https://github.com/3kles-lab/3kles-corebe"
   },
   "keywords": [
     "3KLES",
@@ -19,9 +19,9 @@
   "author": "Jeremy Chaut",
   "license": "ISC",
   "bugs": {
-    "url": "http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/issues"
+    "url": "https://github.com/3kles-lab/3kles-corebe/issues"
   },
-  "homepage": "http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe",
+  "homepage": "https://github.com/3kles-lab/3kles-corebe",
   "scripts": {
     "dev": "node -r ts-node/register src/app.ts ",
     "build": "webpack --config webpack.config.js"
