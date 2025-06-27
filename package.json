@@ -1,6 +1,6 @@
 {
   "name": "@3kles/3kles-corebe",
-  "version": "4.2.2",
+  "version": "4.2.3",
   "description": "3KLES Core BackEnd",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -16,7 +16,7 @@
     "Service",
     "Http"
   ],
-  "author": "Jeremy Chaut",
+  "author": "3Kles Lab",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/3kles-lab/3kles-corebe/issues"
