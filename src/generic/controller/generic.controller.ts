@@ -51,6 +51,8 @@ export class GenericController extends AbstractGenericController {
 				res.json(this.option.formatResponse(type, req, res, this.parseResponse(response.data, type)));
 			} catch (err) {
 				next(err);
+			} finally{
+				req.socket.removeListener('close', abortHandler);
 			}
 		};
 	}
