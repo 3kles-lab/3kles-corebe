@@ -13,7 +13,7 @@ export class GenericService extends AbstractGenericService {
         this.apiUtils = api;
     }
 
-    public async execute(type: string, data: any, option?: ExecuteOption): Promise<ServiceResponse> {
+    public async execute(type: string, data: any, option?: ExecuteOption): Promise<ServiceResponse | undefined> {
         try {
             if (this.parameters[type]) {
                 const query = data.query ? stringify(data.query) : '';
