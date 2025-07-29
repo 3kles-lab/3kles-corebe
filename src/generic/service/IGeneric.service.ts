@@ -1,5 +1,5 @@
 interface IGenericService {
-    execute(type: string, data: any, option?: { abortSignal?: AbortSignal }): Promise<ServiceResponse>;
+    execute(type: string, data: any, option?: { abortSignal?: AbortSignal }): Promise<ServiceResponse | undefined>;
     getServiceParams(): ServiceParams;
     setServiceParams(param: ServiceParams): void;
     setHeaders(type: string, headers: { [key: string]: string }): { [key: string]: string };
