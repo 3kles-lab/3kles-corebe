@@ -7,7 +7,7 @@ import * as path from 'path';
 import * as cors from 'cors';
 import logger from 'pino-http';
 import { AbstractGenericApp } from './abstract.generic.app';
-import { AbstractGenericRouter, ExtendableError, GenericHealth, GenericMetric, GenericRouter, HealthCheckService, HealthController, IHealth, IMetricRegistry, MetricController, MetricService } from '../../index';
+import { AbstractGenericRouter, ExtendableError, GenericController, GenericHealth, GenericMetric, GenericRouter, HealthCheckService, IHealth, IMetricRegistry, MetricService } from '../../index';
 import { GenericLogger, ILogger } from '../logger';
 
 
@@ -88,7 +88,7 @@ export class GenericApp extends AbstractGenericApp {
 	}
 
 	public initHealthCheck(): void {
-		this.app.use('/', new GenericRouter(new HealthController(new HealthCheckService(
+		this.app.use('/', new GenericRouter(new GenericController(new HealthCheckService(
 			this.health,
 			{
 				healthcheck: {
@@ -99,7 +99,7 @@ export class GenericApp extends AbstractGenericApp {
 	}
 
 	public initMetrics() {
-		this.app.use('/', new GenericRouter(new MetricController(new MetricService(
+		this.app.use('/', new GenericRouter(new GenericController(new MetricService(
 			this.genericMetricRegister,
 			{
 				metrics: {

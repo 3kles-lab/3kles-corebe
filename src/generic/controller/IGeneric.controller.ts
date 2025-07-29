@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { IGenericHandler } from '../handler/IGeneric.handler';
-import { IGenericService, ServiceParams } from '../index.generic';
+import { IGenericService, ServiceParams, ServiceResponse } from '../index.generic';
 import { ValidationResult } from 'joi';
 
 interface IGenericController {
@@ -13,7 +13,7 @@ interface IGenericController {
 	parseResponse(response: any, type?: string): any;
 	getServiceParams(): ServiceParams;
 	setServiceParams(params: ServiceParams): void;
-	setResponseHeader(res: express.Response, response: { data: any, totalCount?: number }): void;
+	setResponseHeader(res: express.Response, response: ServiceResponse): void;
 }
 
 type ControllerOption = {

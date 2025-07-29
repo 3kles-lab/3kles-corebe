@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { IGenericService, ServiceParams } from '../index.generic';
+import { IGenericService, ServiceParams, ServiceResponse } from '../index.generic';
 import { ControllerOption, IGenericController } from './IGeneric.controller';
 
 export abstract class AbstractGenericController implements IGenericController {
@@ -49,5 +49,5 @@ export abstract class AbstractGenericController implements IGenericController {
 	}
 
 	// tslint:disable-next-line: no-empty
-	public setResponseHeader(res: express.Response<any, Record<string, any>>, response: { data: any; totalCount?: number; }): void { }
+	public setResponseHeader(res: express.Response<any, Record<string, any>>, response: ServiceResponse): void { }
 }

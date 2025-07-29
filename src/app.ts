@@ -12,8 +12,8 @@ const parameters: ServiceParams = {
 			}
 		],
 		option: {
-			hostname: "localhost",
-			port: 4000,
+			hostname: "192.168.111.63",
+			port: 1235,
 			path: "/MNS150MI/GetUserData",
 			method: "GET",
 			rejectUnauthorized: false
@@ -53,7 +53,7 @@ app.getRouter().router.stack.forEach((m) => {
 console.log(JSON.stringify(routes, null, 4));
 module.exports = app.getApp(); // For Mocha Testing
 
-app.logger.trace('test logger info');
-app.logger.info({ err: new Error('test logger error'), test: true });
-app.logger.debug('test logger debug');
-app.logger.warn('test logger warn');
+// app.logger.trace('test logger info');
+// app.logger.info({ err: new Error('test logger error'), test: true });
+// app.logger.debug('test logger debug');
+// app.logger.warn('test logger warn');
