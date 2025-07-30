@@ -10,7 +10,7 @@ type ResponseType = 'json' | 'send' | 'end' | 'redirect' | 'download' | 'sendFil
 
 interface IServiceBaseResponse {
     statusCode?: number;
-    headers?: Record<string, string | number>;
+    headers?: Record<string, string | number | string[] | undefined>;
     type?: ResponseType;
     data?: any;
 }
