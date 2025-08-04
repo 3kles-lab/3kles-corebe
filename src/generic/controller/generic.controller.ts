@@ -1,13 +1,7 @@
 import * as express from 'express';
 import {
     ControllerOption,
-    GenericService,
-    IDownloadResponse,
     IGenericService,
-    IJsonResponse,
-    IRedirectResponse,
-    ISendResponse,
-    IStreamResponse,
     ServiceResponse,
 } from '../index.generic';
 import { AbstractGenericController } from './abstract.generic.controller';

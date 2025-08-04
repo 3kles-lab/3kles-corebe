@@ -44,6 +44,7 @@ export class GenericService extends AbstractGenericService {
                 const response = await this.apiUtils.executeRequest(param, { signal: option?.abortSignal });
                 return {
                     data: response.body,
+                    statusCode: response.statusCode,
                     headers: (() => {
                         return Object.keys(response.headers)
                             .filter((key) => {
