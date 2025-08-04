@@ -6,8 +6,5 @@ export const hopByHopHeaders = new Set([
     'te',
     'trailer',
     'transfer-encoding',
-    'upgrade',
-    'authorization',
-    'cookie',
-    'set-cookie'
+    'upgrade'
 ]);

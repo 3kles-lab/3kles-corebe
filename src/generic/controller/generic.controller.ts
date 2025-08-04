@@ -1,9 +1,5 @@
 import * as express from 'express';
-import {
-    ControllerOption,
-    IGenericService,
-    ServiceResponse,
-} from '../index.generic';
+import { ControllerOption, IGenericService, ServiceResponse } from '../index.generic';
 import { AbstractGenericController } from './abstract.generic.controller';
 import { ExtendableError } from '../../utils/extendable-error';
 
@@ -72,6 +68,16 @@ export class GenericController extends AbstractGenericController {
                 res.setHeader(key, value);
             }
         }
+
+        if (response.cookies) {
+            response.cookies.forEach((cookie) => {
+                if (cookie.action === 'set') {
+                    res.cookie(cookie.name, cookie.value ?? '', cookie.options ?? {});
+                } else if (cookie.action === 'clear') {
+                    res.clearCookie(cookie.name, cookie.options ?? {});
+                }
+            });
+        }
     }
 
     public handleResponse(type: string, req: express.Request, res: express.Response, response: ServiceResponse): void {
@@ -87,7 +93,7 @@ export class GenericController extends AbstractGenericController {
                     this.option.formatResponse(type, req, res, this.parseResponse(response.data, type)),
                 );
                 break;
-				
+
             case 'download':
                 res.status(response.statusCode || 200).download(response.data, response.filename);
                 break;

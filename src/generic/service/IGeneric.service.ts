@@ -1,9 +1,18 @@
+import { CookieOptions } from 'express';
+
 interface IGenericService {
     execute(type: string, data: any, option?: { abortSignal?: AbortSignal }): Promise<ServiceResponse | undefined>;
     getServiceParams(): ServiceParams;
     setServiceParams(param: ServiceParams): void;
     setHeaders(type: string, headers: { [key: string]: string }): { [key: string]: string };
     setCustomHeaders(type: string, data: any): { [key: string]: string };
+}
+
+interface ICookieOperation {
+    name: string;
+    value?: string;
+    options?: CookieOptions;
+    action: 'set' | 'clear';
 }
 
 type ResponseType = 'json' | 'send' | 'end' | 'redirect' | 'download' | 'sendFile' | 'render' | 'stream';
@@ -13,6 +22,7 @@ interface IServiceBaseResponse {
     headers?: Record<string, string | number | string[] | undefined>;
     type?: ResponseType;
     data?: any;
+    cookies?: ICookieOperation[];
 }
 
 interface IJsonResponse extends IServiceBaseResponse {
