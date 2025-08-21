@@ -60,7 +60,7 @@ export class GenericService extends AbstractGenericService {
                 };
             }
         } catch (e) {
-            throw new ExtendableError(e.body?.error, e.statusCode);
+            throw new ExtendableError(e.body?.error, e.statusCode, e.body);
         }
     }
 
