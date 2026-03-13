@@ -1,26 +1,25 @@
 import * as express from 'express';
 import { IGenericHandler } from '../handler/IGeneric.handler';
 import { IGenericService, ServiceParams, ServiceResponse } from '../index.generic';
-import { ValidationResult } from 'joi';
 
 interface IGenericController {
-	execute(type: any): any;
-	getService(): IGenericService;
-	getOption(): any;
-	setService(service: IGenericService): void;
-	setOption(option: any): void;
-	updateParamFromRequest(type: string, req: express.Request): void;
-	parseResponse(response: any, type?: string): any;
-	getServiceParams(): ServiceParams;
-	setServiceParams(params: ServiceParams): void;
-	setResponseHeader(res: express.Response, response: ServiceResponse): void;
+    execute(type: any): any;
+    getService(): IGenericService;
+    getOption(): any;
+    setService(service: IGenericService): void;
+    setOption(option: any): void;
+    updateParamFromRequest(type: string, req: express.Request): void;
+    parseResponse(response: any, type?: string): any;
+    getServiceParams(): ServiceParams;
+    setServiceParams(params: ServiceParams): void;
+    setResponseHeader(res: express.Response, response: ServiceResponse): void;
 }
 
 type ControllerOption = {
-	handler?: IGenericHandler;
-	validation?: (type: string, data: any) => Partial<ValidationResult>;
-	formatRequest?: (type: string, req: express.Request) => void;
-	formatResponse?: (type: string, req: express.Request, res: express.Response, data: any) => any;
+    handler?: IGenericHandler;
+    validation?: (type: string, data: any) => { error: Error; warning?: Error; value?: any };
+    formatRequest?: (type: string, req: express.Request) => void;
+    formatResponse?: (type: string, req: express.Request, res: express.Response, data: any) => any;
 };
 
 export { IGenericController, ControllerOption };
