@@ -1,4 +1,5 @@
-export interface IMetricRegistry {
+export interface IMetricRegistry<T = unknown> {
+    register: T;
     metrics(): Promise<string>;
     contentType?: any;
     addMetric(metric: any): void;
