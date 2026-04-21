@@ -1,5 +1,5 @@
-import * as dotenv from 'dotenv';
-import * as express from 'express';
+import dotenv from 'dotenv';
+import express from 'express';
 import { Server } from 'http';
 import { IGenericApp } from './IGenericApp';
 

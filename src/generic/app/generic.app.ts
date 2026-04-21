@@ -1,186 +1,243 @@
-import * as bodyParser from 'body-parser';
+import bodyParser from 'body-parser';
 import helmet from 'helmet';
-import * as compression from 'compression';
-import * as express from 'express';
-import * as morgan from 'morgan';
-import * as path from 'path';
-import * as cors from 'cors';
+import compression from 'compression';
+import express from 'express';
+import morgan from 'morgan';
+import path from 'path';
+import cors from 'cors';
 import logger from 'pino-http';
 import { AbstractGenericApp } from './abstract.generic.app';
-import { AbstractGenericRouter, ExtendableError, GenericHealth, GenericMetric, GenericRouter, HealthCheckService, HealthController, IHealth, IMetricRegistry, MetricController, MetricService } from '../../index';
+import {
+    AbstractGenericRouter,
+    ExtendableError,
+    GenericHealth,
+    GenericMetric,
+    GenericRouter,
+    HealthCheckService,
+    HealthController,
+    IHealth,
+    IMetricRegistry,
+    MetricController,
+    MetricService,
+} from '../../index';
 import { GenericLogger, ILogger } from '../logger';
-
 
 // Class to create an Express Server from CRUD router and optional port
 export class GenericApp extends AbstractGenericApp {
-	protected router: AbstractGenericRouter;
-	protected genericLogger: ILogger;
-	protected genericMetricRegister: IMetricRegistry;
-	// constructor(public router: AbstractGenericRouter, port: number, private middleware?: string) {
-	constructor(public middleware?: string, public health?: IHealth, public option?: {
-		limit?: string | number | undefined,
-		extended?: boolean,
-		logger?: ILogger,
-		metricRegister?: IMetricRegistry
-	}) {
-		super();
-		if (!health) {
-			this.health = new GenericHealth();
-		}
-		this.genericLogger = option?.logger ? option.logger : new GenericLogger();
-		this.genericMetricRegister = option?.metricRegister ? option?.metricRegister : new GenericMetric();
-		this.initAppVariable();
-		this.initModule();
-		this.initHealthCheck();
-		this.initMetrics();
-		this.initRoute();
-		this.initError();
-	}
+    protected router: AbstractGenericRouter;
+    protected genericLogger: ILogger;
+    protected genericMetricRegister: IMetricRegistry;
+    // constructor(public router: AbstractGenericRouter, port: number, private middleware?: string) {
+    constructor(
+        public middleware?: string,
+        public health?: IHealth,
+        public option?: {
+            limit?: string | number | undefined;
+            extended?: boolean;
+            logger?: ILogger;
+            metricRegister?: IMetricRegistry;
+        },
+    ) {
+        super();
+        if (!health) {
+            this.health = new GenericHealth();
+        }
+        this.genericLogger = option?.logger ? option.logger : new GenericLogger();
+        this.genericMetricRegister = option?.metricRegister
+            ? option?.metricRegister
+            : new GenericMetric();
+        this.initAppVariable();
+        this.initModule();
+        this.initHealthCheck();
+        this.initMetrics();
+        this.initRoute();
+        this.initError();
+    }
 
-	public get logger(): ILogger {
-		return this.genericLogger;
-	}
+    public get logger(): ILogger {
+        return this.genericLogger;
+    }
 
-	public get metricRgister(): IMetricRegistry {
-		return this.genericMetricRegister;
-	}
+    public get metricRgister(): IMetricRegistry {
+        return this.genericMetricRegister;
+    }
 
-	public initAppVariable(): void {
-		this.app.set('PORT', process.env.PORT || this.app.get('PORT'));
-		this.app.set('LOG', process.env.LOG ? process.env.LOG === 'true' : false);
-		this.app.set('HELMET', process.env.HELMET ? process.env.HELMET === 'true' : true);
-		this.app.set('COMPRESSION', process.env.COMPRESSION ? process.env.COMPRESSION === 'true' : true);
-		this.app.set('SECURE_ROUTE', process.env.SECURE_ROUTE ? process.env.SECURE_ROUTE === 'true' : false);
-		this.app.set('CORS', process.env.CORS ? process.env.CORS === 'true' : true);
-		this.app.set('PINO', process.env.PINO ? process.env.PINO === 'true' : false);
-	}
+    public initAppVariable(): void {
+        this.app.set('PORT', process.env.PORT || this.app.get('PORT'));
+        this.app.set('LOG', process.env.LOG ? process.env.LOG === 'true' : false);
+        this.app.set('HELMET', process.env.HELMET ? process.env.HELMET === 'true' : true);
+        this.app.set(
+            'COMPRESSION',
+            process.env.COMPRESSION ? process.env.COMPRESSION === 'true' : true,
+        );
+        this.app.set(
+            'SECURE_ROUTE',
+            process.env.SECURE_ROUTE ? process.env.SECURE_ROUTE === 'true' : false,
+        );
+        this.app.set('CORS', process.env.CORS ? process.env.CORS === 'true' : true);
+        this.app.set('PINO', process.env.PINO ? process.env.PINO === 'true' : false);
+    }
 
-	public initModule(): void {
-		if (this.app.get('PINO')) {
-			this.app.use(logger());
-		}
-		// Use bodyparser to help to communicate with json
-		this.app.use('/', express.static(path.join(__dirname, '../public')));
-		this.app.use(bodyParser.json({ limit: this.option?.limit }));
-		this.app.use(bodyParser.urlencoded({ limit: this.option?.limit, extended: this.option?.extended || false }));
+    public initModule(): void {
+        if (this.app.get('PINO')) {
+            this.app.use(logger());
+        }
+        // Use bodyparser to help to communicate with json
+        this.app.use('/', express.static(path.join(__dirname, '../public')));
+        this.app.use(bodyParser.json({ limit: this.option?.limit }));
+        this.app.use(
+            bodyParser.urlencoded({
+                limit: this.option?.limit,
+                extended: this.option?.extended || false,
+            }),
+        );
 
-		// Morgan to log
-		if (this.app.get('LOG')) {
-			this.app.use(morgan('dev'));
-		}
-		// Secure App
-		if (this.app.get('HELMET')) {
-			this.app.use(helmet());
-		}
-		// Compress request
-		if (this.app.get('COMPRESSION')) {
-			this.app.use(compression());
-		}
-		if (this.app.get('CORS')) {
-			this.app.use(cors());
-		}
-	}
+        // Morgan to log
+        if (this.app.get('LOG')) {
+            this.app.use(morgan('dev'));
+        }
+        // Secure App
+        if (this.app.get('HELMET')) {
+            this.app.use(helmet());
+        }
+        // Compress request
+        if (this.app.get('COMPRESSION')) {
+            this.app.use(compression());
+        }
+        if (this.app.get('CORS')) {
+            this.app.use(cors());
+        }
+    }
 
-	public initRoute(): void {
-		if (this.router) {
-			this.addRoute(this.router.router);
-		}
-	}
+    public initRoute(): void {
+        if (this.router) {
+            this.addRoute(this.router.router);
+        }
+    }
 
-	public initHealthCheck(): void {
-		this.app.use('/', new GenericRouter(new HealthController(new HealthCheckService(
-			this.health,
-			{
-				healthcheck: {
-					path: 'healthcheck',
-					method: 'GET'
-				}
-			}))).router);
-	}
+    public initHealthCheck(): void {
+        this.app.use(
+            '/',
+            new GenericRouter(
+                new HealthController(
+                    new HealthCheckService(this.health, {
+                        healthcheck: {
+                            path: 'healthcheck',
+                            method: 'GET',
+                        },
+                    }),
+                ),
+            ).router,
+        );
+    }
 
-	public initMetrics() {
-		this.app.use('/', new GenericRouter(new MetricController(new MetricService(
-			this.genericMetricRegister,
-			{
-				metrics: {
-					path: 'metrics',
-					method: 'GET'
-				}
-			}))).router);
+    public initMetrics() {
+        this.app.use(
+            '/',
+            new GenericRouter(
+                new MetricController(
+                    new MetricService(this.genericMetricRegister, {
+                        metrics: {
+                            path: 'metrics',
+                            method: 'GET',
+                        },
+                    }),
+                ),
+            ).router,
+        );
 
-		if (this.genericMetricRegister?.collect) {
-			this.app.use(this.genericMetricRegister.collect());
-		}
-	}
+        if (this.genericMetricRegister?.collect) {
+            this.app.use(this.genericMetricRegister.collect());
+        }
+    }
 
-	public initError(): void {
-		this.app.use(this.logErrors);
-		this.app.use(this.clientErrorHandler);
-		this.app.use(this.errorHandler);
-	}
+    public initError(): void {
+        this.app.use(this.logErrors);
+        this.app.use(this.clientErrorHandler);
+        this.app.use(this.errorHandler);
+    }
 
-	public setMainRouter(router: AbstractGenericRouter): void {
-		this.router = router;
-		this.addRoute(this.router.router);
-	}
+    public setMainRouter(router: AbstractGenericRouter): void {
+        this.router = router;
+        this.addRoute(this.router.router);
+    }
 
-	public addRoute(router: express.Router, m?: any): void {
-		this.app.use(`/${[this.middleware, m].filter(n => n && n.length).join('/')}`, router);
-		this.initError();
-	}
+    public addRoute(router: express.Router, m?: any): void {
+        this.app.use(`/${[this.middleware, m].filter((n) => n && n.length).join('/')}`, router);
+        this.initError();
+    }
 
-	public getRouter(): AbstractGenericRouter {
-		return this.router;
-	}
+    public getRouter(): AbstractGenericRouter {
+        return this.router;
+    }
 
-	protected logErrors(err: ExtendableError, req: express.Request, res: express.Response, next: express.NextFunction): void {
-		if (err.stack) {
-			console.error(err.stack);
-		}
-		next(err);
-	}
+    protected logErrors(
+        err: ExtendableError,
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction,
+    ): void {
+        if (err.stack) {
+            console.error(err.stack);
+        }
+        next(err);
+    }
 
-	protected clientErrorHandler(err: ExtendableError, req: express.Request, res: express.Response, next: express.NextFunction): void {
-		if (req.xhr) {
-			res.status(500).json({ error: 'Something failed!' });
-		} else {
-			next(err);
-		}
-	}
+    protected clientErrorHandler(
+        err: ExtendableError,
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction,
+    ): void {
+        if (req.xhr) {
+            res.status(500).json({ error: 'Something failed!' });
+        } else {
+            next(err);
+        }
+    }
 
-	protected errorHandler(err: ExtendableError, req: express.Request, res: express.Response, next: express.NextFunction): void {
-		if (res.headersSent) {
-			return next(err);
-		}
-		res.status(err.status || 500).json({ error: err.message });
-	}
+    protected errorHandler(
+        err: ExtendableError,
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction,
+    ): void {
+        if (res.headersSent) {
+            return next(err);
+        }
+        res.status(err.status || 500).json({ error: err.message });
+    }
 
-	protected print(p: any, layer: any): void {
-		if (layer.route) {
-			layer.route.stack.forEach(this.print.bind(null, p.concat(this.split(layer.route.path))));
-		} else if (layer.name === 'router' && layer.handle.stack) {
-			layer.handle.stack.forEach(this.print.bind(null, p.concat(this.split(layer.regexp))));
-		} else if (layer.method) {
-			console.log('%s /%s',
-				layer.method.toUpperCase(),
-				p.concat(this.split(layer.regexp)).filter(Boolean).join('/'));
-		}
-	}
+    protected print(p: any, layer: any): void {
+        if (layer.route) {
+            layer.route.stack.forEach(
+                this.print.bind(null, p.concat(this.split(layer.route.path))),
+            );
+        } else if (layer.name === 'router' && layer.handle.stack) {
+            layer.handle.stack.forEach(this.print.bind(null, p.concat(this.split(layer.regexp))));
+        } else if (layer.method) {
+            console.log(
+                '%s /%s',
+                layer.method.toUpperCase(),
+                p.concat(this.split(layer.regexp)).filter(Boolean).join('/'),
+            );
+        }
+    }
 
-	protected split(thing: any): any {
-		if (typeof thing === 'string') {
-			return thing.split('/');
-		} else if (thing.fast_slash) {
-			return '';
-		} else {
-			const match = thing.toString()
-				.replace('\\/?', '')
-				.replace('(?=\\/|$)', '$')
-				.match(/^\/\^((?:\\[.*+?^${}()|[\]\\\/]|[^.*+?^${}()|[\]\\\/])*)\$\//);
-			return match
-				? match[1].replace(/\\(.)/g, '$1').split('/')
-				: '<complex:' + thing.toString() + '>';
-		}
-	}
-
+    protected split(thing: any): any {
+        if (typeof thing === 'string') {
+            return thing.split('/');
+        } else if (thing.fast_slash) {
+            return '';
+        } else {
+            const match = thing
+                .toString()
+                .replace('\\/?', '')
+                .replace('(?=\\/|$)', '$')
+                .match(/^\/\^((?:\\[.*+?^${}()|[\]\\\/]|[^.*+?^${}()|[\]\\\/])*)\$\//);
+            return match
+                ? match[1].replace(/\\(.)/g, '$1').split('/')
+                : '<complex:' + thing.toString() + '>';
+        }
+    }
 }
