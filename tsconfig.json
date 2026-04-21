@@ -5,6 +5,8 @@
 		"target": "es2022",
 		"outDir": "dist",
 		"skipLibCheck": true,
+		"esModuleInterop": true,
+    	"allowSyntheticDefaultImports": true,
 		"lib": [
 			"dom",
 			"es5",
