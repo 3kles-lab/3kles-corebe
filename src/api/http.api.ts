@@ -16,13 +16,13 @@ export class HttpApi implements IGenericAPI {
 	}
 
 	// Function to create options request data
-	public buildRequest(params: IHttpOptions, id?: any, data?: any): any {
-		console.log("Parameters:", params);
+	public buildRequest(params: IHttpOptions, originDataRequest?: any, data?: string): any {
+		// console.log("Parameters:", params);
 		// Create options request
 		if (params.protocol) {
 			this.protocol = params.protocol;
 		}
-		const options: IHttpOptions = params;
+		const options: IHttpOptions = { ...params };
 		if (data) {
 			options.data = data;
 		}
@@ -30,16 +30,12 @@ export class HttpApi implements IGenericAPI {
 	}
 
 	// Function to execute request and manage response
-	public async executeRequest(options: any): Promise<any> {
+	public async executeRequest(options: any, requestOption?: { signal?: AbortSignal }): Promise<{ statusCode: number, headers: any, body: any }> {
 		return new Promise((resolve, reject) => {
 			this.beforeExecute();
 
 			// tslint:disable-next-line:typedef
 			function callback(res) {
-				// reject on bad status
-				if (res.statusCode < 200 || res.statusCode > 304) {
-					return reject(new Error('statusCode=' + res.statusCode));
-				}
 				// cumulate data
 				let body = [];
 				res.on('data', (chunk) => {
@@ -51,18 +47,29 @@ export class HttpApi implements IGenericAPI {
 						body = this.processResponse(body);
 					} catch (e) {
 						const error = this.processError(e);
-						reject(error);
+						reject({ statusCode: res.statusCode, body: error, headers: res.headers });
 					}
-					resolve(body);
+					// reject on bad status
+					if (res.statusCode < 200 || res.statusCode > 304) {
+						reject({ statusCode: res.statusCode, body, headers: res.headers });
+					} else {
+						resolve({ statusCode: res.statusCode, body, headers: res.headers });
+					}
+
 				});
 			}
 
-			console.log('Options: ', options);
 			let req;
 			if (this.protocol === 'https') {
-				req = https.request(options, callback.bind(this));
+				req = https.request({ ...options, ...(requestOption?.signal && { signal: requestOption?.signal }) }, callback.bind(this)).on('error', (err) => {
+					console.error(err);
+					reject({ statusCode: 500, body: err, headers: {} });
+				});
 			} else {
-				req = http.request(options, callback.bind(this));
+				req = http.request({ ...options, ...(requestOption?.signal && { signal: requestOption?.signal }) }, callback.bind(this)).on('error', (err) => {
+					console.error(err);
+					reject({ statusCode: 500, body: err, headers: {} });
+				});
 			}
 			if (options.data) {
 				req.write(options.data);
@@ -74,19 +81,26 @@ export class HttpApi implements IGenericAPI {
 	}
 
 	public processResponse(response: any): any {
-		return (this.responseParser) ? this.responseParser.parseResponse(response) : response;
+		if (response.length) {
+			return (this.responseParser) ? this.responseParser.parseResponse(response) : response;
+		}
 	}
 
 	public processError(error: any): any {
-		return (this.errorParser) ? this.errorParser.parseResponse(error) : error;
+		try {
+			return (this.errorParser) ? this.errorParser.parseResponse(error) : error;
+		} catch (err) {
+			return err;
+		}
+
 	}
 
 	public beforeExecute(): void {
-		console.log("Before execute");
+		// console.log("Before execute");
 		return;
 	}
 	public afterExecute(): void {
-		console.log("After execute");
+		// console.log("After execute");
 		return;
 	}
 

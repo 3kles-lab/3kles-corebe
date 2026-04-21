@@ -1,12 +1,12 @@
 import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
 import { AbstractAuthToken } from "./abstract.auth.token";
-
+import * as crypto from 'crypto';
 export class AuthToken extends AbstractAuthToken {
 
 	public async authenticate(req: express.Request, res: express.Response, next: express.NextFunction): Promise<any> {
 		const payload = { user: req.headers.user };
-		const token = jwt.sign(payload, this.secretKey, { expiresIn: this.expiredTime });
+		const token = jwt.sign(payload, this.secretKey, { expiresIn: +this.expiredTime });
 		res.set('token', token);
 		return res.status(200).json({ token });
 	}
@@ -19,7 +19,7 @@ export class AuthToken extends AbstractAuthToken {
 					res.status(403).send({ success: false, message: "Invalid token" });
 				} else {
 					const payload = { user: (decodedToken as any).user };
-					const tk = jwt.sign(payload, this.secretKey, { expiresIn: this.expiredTime });
+					const tk = jwt.sign(payload, this.secretKey, { expiresIn: +this.expiredTime });
 					res.set('token', tk);
 					next();
 				}
@@ -27,5 +27,9 @@ export class AuthToken extends AbstractAuthToken {
 		} else {
 			res.status(403).send({ success: false, message: "No token." });
 		}
+	}
+
+	public async refreshToken(req: express.Request, res: express.Response, next: express.NextFunction): Promise<any> {
+		return res.status(200).json({ refreshToken: crypto.randomBytes(64).toString('hex') });
 	}
 }

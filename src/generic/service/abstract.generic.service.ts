@@ -1,15 +1,27 @@
-import { IGenericService } from './IGeneric.service';
+import { IGenericService, ExecuteOption, ServiceParams, ServiceResponse } from './IGeneric.service';
 
 export abstract class AbstractGenericService implements IGenericService {
-	protected parameters: any;
+    protected parameters: ServiceParams;
 
-	public abstract async execute(type: string, data: any): Promise<any>;
+    constructor(params?: ServiceParams) {
+        if (params) this.parameters = params;
+    }
 
-	public getParameters(): any {
-		return this.parameters;
-	}
+    public abstract execute(type: string, data: any, option?: ExecuteOption): Promise<ServiceResponse | undefined>;
 
-	public setParameters(params: any): void {
-		this.parameters = params;
-	}
+    public getServiceParams(): ServiceParams {
+        return this.parameters;
+    }
+
+    public setServiceParams(params: ServiceParams): void {
+        this.parameters = params;
+    }
+
+    public setHeaders(type: string, headers: { [key: string]: string }): { [key: string]: string } {
+        return {};
+    }
+
+    public setCustomHeaders(type: string, data: any): { [key: string]: string } {
+        return {};
+    }
 }

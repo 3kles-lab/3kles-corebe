@@ -1,17 +1,39 @@
-import { GenericApp, GenericRouter, GenericService, GenericController, HttpApi, IHttpOptions } from './index';
+import { GenericApp, GenericRouter, GenericService, GenericController, HttpApi, IHttpOptions, ServiceParams } from './index';
 import { JSONParser } from './utils/index.utils';
 
-const parameters = {
-	getproject: {
-		hostname: "gitlab.3kles.local",
-		port: 80,
-		path: "/api/v4/issues?private_token=3KzstUKxhuSbV_CKY7Fy",
-		method: "GET",
-		rejectUnauthorized: false
-	} as IHttpOptions
+const parameters: ServiceParams = {
+	listSelections: {
+		path: 'selections',
+		method: 'GET',
+		middlewares: [
+			(req, res, next) => {
+				console.log('hello');
+				next();
+			}
+		],
+		option: {
+			hostname: "192.168.111.63",
+			port: 1235,
+			path: "/MNS150MI/GetUserData",
+			method: "GET",
+			rejectUnauthorized: false
+		}
+	},
+	getSelection: {
+		path: 'selections/:id',
+		method: 'GET',
+		option: {
+			hostname: "localhost",
+			port: 12100,
+			path: "/selections/:id",
+			method: "GET",
+			rejectUnauthorized: false
+		}
+	}
 };
 
-const app: GenericApp = new GenericApp('api');
+const middlewares = 'api';
+const app: GenericApp = new GenericApp(middlewares);
 const httpjsonapi: HttpApi = new HttpApi();
 httpjsonapi.setResponseParser(new JSONParser());
 httpjsonapi.setErrorParser(new JSONParser());
@@ -24,9 +46,14 @@ app.startApp(40001);
 const routes = [];
 app.getRouter().router.stack.forEach((m) => {
 	if (m.route) {
-		routes.push(Object.keys(m.route.methods) + " -> " + m.route.path);
+		// routes.push(Object.keys(m.route.methods) + " -> " + middlewares + m.route.path);
 	}
 });
 
 console.log(JSON.stringify(routes, null, 4));
 module.exports = app.getApp(); // For Mocha Testing
+
+// app.logger.trace('test logger info');
+// app.logger.info({ err: new Error('test logger error'), test: true });
+// app.logger.debug('test logger debug');
+// app.logger.warn('test logger warn');

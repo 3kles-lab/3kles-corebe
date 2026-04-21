@@ -1,15 +1,19 @@
 import * as express from 'express';
-import { IGenericService } from '../index.generic';
-import { IGenericController } from './IGeneric.controller';
+import { IGenericService, ServiceParams, ServiceResponse } from '../index.generic';
+import { ControllerOption, IGenericController } from './IGeneric.controller';
 
 export abstract class AbstractGenericController implements IGenericController {
 
 	protected service: IGenericService;
-	protected parameters: any = [];
+	protected parameters: ServiceParams = {};
+	protected option: ControllerOption;
 
-	constructor(s?: IGenericService) {
+	constructor(s?: IGenericService, option?: ControllerOption) {
 		if (s) {
 			this.setService(s);
+		}
+		if (option) {
+			this.setOption(option);
 		}
 	}
 
@@ -19,16 +23,31 @@ export abstract class AbstractGenericController implements IGenericController {
 		return response;
 	}
 
-	public setService(s: IGenericService): void {
-		this.service = s;
-		this.parameters = this.service.getParameters();
+	public getService(): IGenericService {
+		return this.service;
 	}
 
-	public getParameters(): any {
+	public getOption(): any {
+		return this.option;
+	}
+
+	public setService(s: IGenericService): void {
+		this.service = s;
+		this.parameters = this.service.getServiceParams();
+	}
+
+	public setOption(handler: any): void {
+		this.option = handler;
+	}
+
+	public getServiceParams(): ServiceParams {
 		return this.parameters;
 	}
 
-	public setParameters(params: any): void {
+	public setServiceParams(params: any): void {
 		this.parameters = params;
 	}
+
+	// tslint:disable-next-line: no-empty
+	public setResponseHeader(res: express.Response<any, Record<string, any>>, response: ServiceResponse): void { }
 }

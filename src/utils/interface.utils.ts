@@ -7,6 +7,7 @@ interface IHttpOptions {
 	rejectUnauthorized: boolean;
 	headers: any;
 	data?: any;
+	signal?: AbortSignal;
 }
 
 interface IRequestParameter {
