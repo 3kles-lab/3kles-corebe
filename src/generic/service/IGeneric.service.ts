@@ -83,7 +83,7 @@ type ServiceParams = {
         option?: any;
         middlewares?: any[];
         headerKeys?: string[];
-        responseType?: 'json' | 'stream';
+        responseType?: ResponseType;
     };
 };
 

@@ -57,7 +57,7 @@ export class GenericService extends AbstractGenericService {
                             .reduce((a, b) => ({ ...a, ...b }), {});
                     })(),
                     type: this.parameters[type].responseType || 'json',
-                };
+                } as ServiceResponse;
             }
         } catch (e) {
             throw new ExtendableError(e.body?.error, e.statusCode, e.body);
