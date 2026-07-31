@@ -4,7 +4,8 @@ import { OpenApiRouteRegistration } from '../openapi';
 
 interface IGenericRouter {
     router: express.Router;
+    openApiRoutes?: OpenApiRouteRegistration[];
+
     addController(controller: IGenericController, checker?: any): void;
-    openApiRoutes?(): readonly OpenApiRouteRegistration[];
 }
 export { IGenericRouter };

@@ -6,7 +6,7 @@ import { OpenApiRouteRegistration } from '../openapi';
 
 // Class to create a router from a GenericController
 export class GenericRouter extends AbstractGenericRouter {
-    public readonly openApiRoutes: OpenApiRouteRegistration[] = [];
+    public openApiRoutes: OpenApiRouteRegistration[] = [];
 
     constructor(controller?: IGenericController, options?: RouterOptions) {
         super(options);
