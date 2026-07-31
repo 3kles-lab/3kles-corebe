@@ -3,13 +3,16 @@ import { ServiceParams, ServiceResponse } from '../service/IGeneric.service';
 import { IHealth } from './health.interface';
 
 export class HealthCheckService extends AbstractGenericService {
-    constructor(private health: IHealth, params?: ServiceParams) {
+    constructor(
+        private health: IHealth,
+        params?: ServiceParams,
+    ) {
         super(params);
     }
 
-    public async execute(type: string, data: any): Promise<ServiceResponse> {
+    public execute(type: string, data: any): Promise<ServiceResponse | undefined> | undefined {
         if (type === 'healthcheck') {
-            return await this.healthCheck();
+            return this.healthCheck();
         }
     }
 
