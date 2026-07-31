@@ -15,18 +15,22 @@ import {
     GenericMetric,
     GenericRouter,
     HealthCheckService,
+    IGenericRouter,
     IHealth,
     IMetricRegistry,
     MetricService,
 } from '../../index';
 import { GenericLogger, ILogger } from '../logger';
+import { OpenApiRegistry, OpenApiRouteRegistration, OpenApiService } from '../openapi';
 
 // Class to create an Express Server from CRUD router and optional port
 export class GenericApp extends AbstractGenericApp {
-    protected router: AbstractGenericRouter;
+    protected router?: IGenericRouter;
     protected genericLogger: ILogger;
     protected genericMetricRegister: IMetricRegistry;
-    // constructor(public router: AbstractGenericRouter, port: number, private middleware?: string) {
+
+    public openApiRegistry!: OpenApiRegistry;
+
     constructor(
         public middleware?: string,
         public health?: IHealth,
@@ -35,17 +39,22 @@ export class GenericApp extends AbstractGenericApp {
             extended?: boolean;
             logger?: ILogger;
             metricRegister?: IMetricRegistry;
+            openapi?: {
+                enabled?: boolean;
+                path?: string;
+                title?: string;
+                version?: string;
+                description?: string;
+            };
         },
     ) {
         super();
-        if (!health) {
-            this.health = new GenericHealth();
-        }
         this.genericLogger = option?.logger ? option.logger : new GenericLogger();
         this.genericMetricRegister = option?.metricRegister ? option?.metricRegister : new GenericMetric();
         this.initAppVariable();
         this.initModule();
         this.initHealthCheck();
+        this.initOpenApi();
         this.initMetrics();
         this.initRoute();
         this.initError();
@@ -106,9 +115,35 @@ export class GenericApp extends AbstractGenericApp {
             '/',
             new GenericRouter(
                 new GenericController(
-                    new HealthCheckService(this.health, {
+                    new HealthCheckService(this.health ?? new GenericHealth(), {
                         healthcheck: {
                             path: 'healthcheck',
+                            method: 'GET',
+                        },
+                    }),
+                ),
+            ).router,
+        );
+    }
+
+    public initOpenApi(): void {
+        this.openApiRegistry = new OpenApiRegistry({
+            title: this.option?.openapi?.title ?? process.env.npm_package_name ?? 'API',
+            version: this.option?.openapi?.version ?? process.env.npm_package_version ?? '1.0.0',
+            description: this.option?.openapi?.description,
+        });
+
+        if (this.option?.openapi?.enabled === false) {
+            return;
+        }
+
+        this.app.use(
+            '/openapi.json',
+            new GenericRouter(
+                new GenericController(
+                    new OpenApiService(this.openApiRegistry, {
+                        document: {
+                            path: '/',
                             method: 'GET',
                         },
                     }),
@@ -143,17 +178,24 @@ export class GenericApp extends AbstractGenericApp {
         this.app.use(this.errorHandler);
     }
 
-    public setMainRouter(router: AbstractGenericRouter): void {
+    public setMainRouter(router: IGenericRouter, openApiRoutes?: readonly OpenApiRouteRegistration[]): void {
         this.router = router;
-        this.addRoute(this.router.router);
+        this.addRoute(this.router.router, undefined, openApiRoutes);
     }
 
-    public addRoute(router: express.Router, m?: any): void {
+    public addRoute(router: express.Router, m?: any, openApiRoutes?: readonly OpenApiRouteRegistration[]): void {
+        if (openApiRoutes?.length) {
+            this.openApiRegistry.addRoutes(
+                openApiRoutes,
+                `/${[this.middleware, m].filter((n) => n && n.length).join('/')}`,
+            );
+        }
+
         this.app.use(`/${[this.middleware, m].filter((n) => n && n.length).join('/')}`, router);
         this.initError();
     }
 
-    public getRouter(): AbstractGenericRouter {
+    public getRouter(): AbstractGenericRouter | undefined {
         return this.router;
     }
 

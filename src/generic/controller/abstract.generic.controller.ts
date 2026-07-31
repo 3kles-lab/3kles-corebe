@@ -3,51 +3,50 @@ import { IGenericService, ServiceParams, ServiceResponse } from '../index.generi
 import { ControllerOption, IGenericController } from './IGeneric.controller';
 
 export abstract class AbstractGenericController implements IGenericController {
+    protected service?: IGenericService;
+    protected parameters?: ServiceParams;
+    protected option?: ControllerOption;
 
-	protected service: IGenericService;
-	protected parameters: ServiceParams = {};
-	protected option: ControllerOption;
+    constructor(s?: IGenericService, option?: ControllerOption) {
+        if (s) {
+            this.setService(s);
+        }
+        if (option) {
+            this.setOption(option);
+        }
+    }
 
-	constructor(s?: IGenericService, option?: ControllerOption) {
-		if (s) {
-			this.setService(s);
-		}
-		if (option) {
-			this.setOption(option);
-		}
-	}
+    public abstract execute(type: string): any;
+    public abstract updateParamFromRequest(type: string, req: express.Request): void;
+    public parseResponse(response: any, type?: string): any {
+        return response;
+    }
 
-	public abstract execute(type: string): any;
-	public abstract updateParamFromRequest(type: string, req: express.Request): void;
-	public parseResponse(response: any, type?: string): any {
-		return response;
-	}
+    public getService(): IGenericService | undefined {
+        return this.service;
+    }
 
-	public getService(): IGenericService {
-		return this.service;
-	}
+    public getOption(): ControllerOption | undefined {
+        return this.option;
+    }
 
-	public getOption(): any {
-		return this.option;
-	}
+    public setService(s: IGenericService): void {
+        this.service = s;
+        this.parameters = this.service.getServiceParams();
+    }
 
-	public setService(s: IGenericService): void {
-		this.service = s;
-		this.parameters = this.service.getServiceParams();
-	}
+    public setOption(handler: any): void {
+        this.option = handler;
+    }
 
-	public setOption(handler: any): void {
-		this.option = handler;
-	}
+    public getServiceParams(): ServiceParams | undefined {
+        return this.parameters;
+    }
 
-	public getServiceParams(): ServiceParams {
-		return this.parameters;
-	}
+    public setServiceParams(params: any): void {
+        this.parameters = params;
+    }
 
-	public setServiceParams(params: any): void {
-		this.parameters = params;
-	}
-
-	// tslint:disable-next-line: no-empty
-	public setResponseHeader(res: express.Response<any, Record<string, any>>, response: ServiceResponse): void { }
+    // tslint:disable-next-line: no-empty
+    public setResponseHeader(res: express.Response<any, Record<string, any>>, response: ServiceResponse): void {}
 }

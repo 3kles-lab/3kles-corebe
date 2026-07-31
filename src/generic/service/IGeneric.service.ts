@@ -1,8 +1,14 @@
-import { CookieOptions } from 'express';
+import { CookieOptions, RequestHandler } from 'express';
+import { HttpMethod } from '../type';
+import { OpenApiOperation } from '../openapi';
 
 interface IGenericService {
-    execute(type: string, data: any, option?: { abortSignal?: AbortSignal }): Promise<ServiceResponse | undefined>;
-    getServiceParams(): ServiceParams;
+    execute(
+        type: string,
+        data: any,
+        option?: { abortSignal?: AbortSignal },
+    ): Promise<ServiceResponse | undefined> | undefined;
+    getServiceParams(): ServiceParams | undefined;
     setServiceParams(param: ServiceParams): void;
     setHeaders(type: string, headers: { [key: string]: string }): { [key: string]: string };
     setCustomHeaders(type: string, data: any): { [key: string]: string };
@@ -66,6 +72,18 @@ interface IStreamResponse extends IServiceBaseResponse {
     data: NodeJS.ReadableStream;
 }
 
+interface ServiceParam {
+    path: string;
+    method: HttpMethod;
+    option?: any;
+    middlewares?: RequestHandler[];
+    headerKeys?: string[];
+    responseType?: ResponseType;
+    openapi?: OpenApiOperation;
+}
+
+type ServiceParams = Record<string, ServiceParam>;
+
 type ServiceResponse =
     | IJsonResponse
     | ISendResponse
@@ -76,23 +94,13 @@ type ServiceResponse =
     | IRenderResponse
     | IStreamResponse;
 
-type ServiceParams = {
-    [key: string]: {
-        path: string;
-        method: string;
-        option?: any;
-        middlewares?: any[];
-        headerKeys?: string[];
-        responseType?: ResponseType;
-    };
-};
-
 type ExecuteOption = {
     abortSignal?: AbortSignal; // to stop process execution
 };
 
 export {
     IGenericService,
+    ServiceParam,
     ServiceParams,
     ExecuteOption,
     ServiceResponse,

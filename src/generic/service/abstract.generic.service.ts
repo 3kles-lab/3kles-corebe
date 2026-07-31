@@ -1,15 +1,15 @@
 import { IGenericService, ExecuteOption, ServiceParams, ServiceResponse } from './IGeneric.service';
 
 export abstract class AbstractGenericService implements IGenericService {
-    protected parameters: ServiceParams;
+    protected parameters?: ServiceParams;
 
     constructor(params?: ServiceParams) {
         if (params) this.parameters = params;
     }
 
-    public abstract execute(type: string, data: any, option?: ExecuteOption): Promise<ServiceResponse | undefined>;
+    public abstract execute(type: string, data: any, option?: ExecuteOption): Promise<ServiceResponse | undefined> | undefined;
 
-    public getServiceParams(): ServiceParams {
+    public getServiceParams(): ServiceParams | undefined {
         return this.parameters;
     }
 

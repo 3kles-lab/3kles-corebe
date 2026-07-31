@@ -5,6 +5,8 @@ export * from './service/index.generic.service';
 export * from './app/index.generic.app';
 export * from './handler/index.generic.handler';
 export * from './constants';
+export * from './type';
 export * from './health/index';
 export * from './logger/index';
 export * from './metric/index';
+export * from './openapi/index';

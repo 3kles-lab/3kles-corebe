@@ -15,7 +15,7 @@ export class GenericService extends AbstractGenericService {
 
     public async execute(type: string, data: any, option?: ExecuteOption): Promise<ServiceResponse | undefined> {
         try {
-            if (this.parameters[type]) {
+            if (this.parameters?.[type]) {
                 const query = data.query ? stringify(data.query) : '';
                 if (!this.parameters[type].option?.path) {
                     this.parameters[type].option.path = this.parameters[type].path;
@@ -23,7 +23,7 @@ export class GenericService extends AbstractGenericService {
                 const param = this.apiUtils.buildRequest(
                     this.parameters[type].option,
                     data,
-                    data.body && Object.keys(data.body).length > 0 ? JSON.stringify(data.body) : null,
+                    data.body && Object.keys(data.body).length > 0 ? JSON.stringify(data.body) : undefined,
                 );
                 param.path = this.setParams(param.path, data.params);
                 if (query) {
@@ -59,7 +59,7 @@ export class GenericService extends AbstractGenericService {
                     type: this.parameters[type].responseType || 'json',
                 } as ServiceResponse;
             }
-        } catch (e) {
+        } catch (e: any) {
             throw new ExtendableError(e.body?.error, e.statusCode, e.body);
         }
     }
