@@ -8,14 +8,15 @@ export class SecureRouter extends AbstractSecureRouter {
 	public addController(controller: IGenericController, checker?: any): void {
 		if (controller) {
 			const handler = controller.getOption()?.handler?.handler || new GenericHandler().handler;
+			const serviceParams = controller.getServiceParams();
 
-			if(controller.getServiceParams()){
-				for (const key of Object.keys(controller.getServiceParams())) {
-					const middlewares = controller.getServiceParams()[key].middlewares || [];
-					let route = (controller.getServiceParams()[key].path) ? controller.getServiceParams()[key].path : key;
+			if(serviceParams){
+				for (const key of Object.keys(serviceParams)) {
+					const middlewares = serviceParams[key].middlewares || [];
+					let route = (serviceParams[key].path) ? serviceParams[key].path : key;
 					route = (route.startsWith("/") ? "" : "/") + route;
-					if (controller.getServiceParams()[key].method) {
-						switch (controller.getServiceParams()[key].method) {
+					if (serviceParams[key].method) {
+						switch (serviceParams[key].method) {
 							case 'GET':
 								this.router.route(route).get(...middlewares, controller.execute(key), handler);
 								break;
