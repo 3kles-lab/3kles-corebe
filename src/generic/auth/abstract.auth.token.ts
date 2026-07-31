@@ -1,4 +1,3 @@
-import * as blacklist from 'express-jwt-blacklist';
 import * as express from 'express';
 import { IAuth } from "./IAuth";
 
