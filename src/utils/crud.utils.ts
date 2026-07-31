@@ -1,5 +1,7 @@
+import { RequestHandler } from "express";
+
 export class CRUDUtil {
-	public static generate(route: string, hostname: string, port: number, path: string, headerKeys?: string[], middlewares?: any[]): ({ [key: string]: any }) {
+	public static generate(route: string, hostname: string, port: number, path: string, headerKeys?: string[], middlewares?: RequestHandler[]): ({ [key: string]: any }) {
 		route += route.endsWith("/") ? "" : "/";
 		const option = {
 			hostname,
