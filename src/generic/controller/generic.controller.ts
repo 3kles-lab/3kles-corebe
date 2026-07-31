@@ -35,14 +35,14 @@ export class GenericController extends AbstractGenericController {
                     }
                 }
 
-                if (this.option.formatRequest) {
+                if (this.option?.formatRequest) {
                     this.option.formatRequest(type, req);
                 } else {
                     req.query.per_page = req.query.per_page && +req.query.per_page >= 0 ? req.query.per_page : '0';
                     req.query.page = req.query.page && +req.query.page > 0 ? req.query.page : '1';
                 }
 
-                const response = await this.service.execute(type, req, { abortSignal: signal });
+                const response = await this.service?.execute(type, req, { abortSignal: signal });
                 if (!response) throw new ExtendableError(type + '-not-found', 404);
 
                 if (!response.type) {
@@ -65,7 +65,7 @@ export class GenericController extends AbstractGenericController {
     public setResponseHeader(res: express.Response, response: ServiceResponse): void {
         if (response.headers) {
             for (const [key, value] of Object.entries(response.headers)) {
-                res.setHeader(key, value);
+                res.setHeader(key, value ?? '');
             }
         }
 
@@ -84,13 +84,15 @@ export class GenericController extends AbstractGenericController {
         switch (response.type) {
             case 'json':
                 res.status(response.statusCode || 200).json(
-                    this.option.formatResponse(type, req, res, this.parseResponse(response.data, type)),
+                    this.option?.formatResponse?.(type, req, res, this.parseResponse(response.data, type)) ??
+                        this.parseResponse(response.data, type),
                 );
                 break;
 
             case 'send':
                 res.status(response.statusCode || 200).send(
-                    this.option.formatResponse(type, req, res, this.parseResponse(response.data, type)),
+                    this.option?.formatResponse?.(type, req, res, this.parseResponse(response.data, type)) ??
+                        this.parseResponse(response.data, type),
                 );
                 break;
 
