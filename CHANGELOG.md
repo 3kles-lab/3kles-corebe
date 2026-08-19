@@ -1,3 +1,10 @@
+# [5.4.0](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/compare/v5.3.0...v5.4.0) (2026-08-19)
+
+
+### Features
+
+* add receive stream ([546d360](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/commit/546d36043b30e5477055791a1eb8009aa9459a0b))
+
 # [5.3.0](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/compare/v5.2.1...v5.3.0) (2026-07-31)
 
 
