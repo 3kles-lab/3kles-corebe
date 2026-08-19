@@ -24,7 +24,8 @@
   "homepage": "https://github.com/3kles-lab/3kles-corebe",
   "scripts": {
     "dev": "node -r ts-node/register src/app.ts ",
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "test": "jest --runInBand"
   },
   "dependencies": {
     "body-parser": "^2.2.0",
