@@ -22,6 +22,7 @@ interface ICookieOperation {
 }
 
 type ResponseType = 'json' | 'send' | 'end' | 'redirect' | 'download' | 'sendFile' | 'render' | 'stream';
+type RequestType = 'json' | 'stream';
 
 interface IServiceBaseResponse {
     statusCode?: number;
@@ -78,6 +79,7 @@ interface ServiceParam {
     option?: any;
     middlewares?: RequestHandler[];
     headerKeys?: string[];
+    requestType?: RequestType;
     responseType?: ResponseType;
     openapi?: OpenApiOperation;
 }
@@ -113,4 +115,5 @@ export {
     ISendFileResponse,
     IRenderResponse,
     IStreamResponse,
+    RequestType,
 };

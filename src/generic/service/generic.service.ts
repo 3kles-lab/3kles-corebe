@@ -16,14 +16,19 @@ export class GenericService extends AbstractGenericService {
     public async execute(type: string, data: any, option?: ExecuteOption): Promise<ServiceResponse | undefined> {
         try {
             if (this.parameters?.[type]) {
+                const serviceParameter = this.parameters[type];
+                const isRequestStream = serviceParameter.requestType === 'stream';
+                const isResponseStream = serviceParameter.responseType === 'stream';
                 const query = data.query ? stringify(data.query) : '';
-                if (!this.parameters[type].option?.path) {
-                    this.parameters[type].option.path = this.parameters[type].path;
+                if (!serviceParameter.option?.path) {
+                    serviceParameter.option.path = serviceParameter.path;
                 }
                 const param = this.apiUtils.buildRequest(
-                    this.parameters[type].option,
+                    serviceParameter.option,
                     data,
-                    data.body && Object.keys(data.body).length > 0 ? JSON.stringify(data.body) : undefined,
+                    !isRequestStream && data.body && Object.keys(data.body).length > 0
+                        ? JSON.stringify(data.body)
+                        : undefined,
                 );
                 param.path = this.setParams(param.path, data.params);
                 if (query) {
@@ -32,8 +37,8 @@ export class GenericService extends AbstractGenericService {
 
                 param.headers = {
                     ...param.headers,
-                    ...(this.parameters[type].headerKeys &&
-                        this.parameters[type].headerKeys
+                    ...(serviceParameter.headerKeys &&
+                        serviceParameter.headerKeys
                             .filter((key) => data.headers[key])
                             .map((key) => ({ [key]: data.headers[key] }))
                             .reduce((a, b) => ({ ...a, ...b }), {})),
@@ -41,7 +46,11 @@ export class GenericService extends AbstractGenericService {
                     ...this.setCustomHeaders(type, data),
                 };
 
-                const response = await this.apiUtils.executeRequest(param, { signal: option?.abortSignal });
+                const response = await this.apiUtils.executeRequest(param, {
+                    signal: option?.abortSignal,
+                    requestStream: isRequestStream ? data : undefined,
+                    responseType: isResponseStream ? 'stream' : 'buffer',
+                });
 
                 return {
                     data: response.body,
@@ -56,7 +65,7 @@ export class GenericService extends AbstractGenericService {
                             })
                             .reduce((a, b) => ({ ...a, ...b }), {});
                     })(),
-                    type: this.parameters[type].responseType || 'json',
+                    type: serviceParameter.responseType || 'json',
                 } as ServiceResponse;
             }
         } catch (e: any) {

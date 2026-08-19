@@ -1,6 +1,6 @@
 import * as https from 'https';
 import * as http from 'http';
-import { IGenericAPI } from './IGenericAPI';
+import { IGenericAPI, IHttpApiResponse, IHttpExecuteRequestOption } from './IGenericAPI';
 import { IHttpOptions, IParserResponse } from '../utils/index.utils';
 
 export class HttpApi implements IGenericAPI {
@@ -30,12 +30,17 @@ export class HttpApi implements IGenericAPI {
 	}
 
 	// Function to execute request and manage response
-	public async executeRequest(options: any, requestOption?: { signal?: AbortSignal }): Promise<{ statusCode: number, headers: any, body: any }> {
+	public async executeRequest(options: any, requestOption?: IHttpExecuteRequestOption): Promise<IHttpApiResponse> {
 		return new Promise((resolve, reject) => {
 			this.beforeExecute();
 
 			// tslint:disable-next-line:typedef
 			function callback(res) {
+				if (requestOption?.responseType === 'stream') {
+					resolve({ statusCode: res.statusCode, body: res, headers: res.headers });
+					return;
+				}
+
 				// cumulate data
 				let body = [];
 				res.on('data', (chunk) => {
@@ -71,11 +76,15 @@ export class HttpApi implements IGenericAPI {
 					reject({ statusCode: 500, body: err, headers: {} });
 				});
 			}
-			if (options.data) {
+			if (requestOption?.requestStream) {
+				requestOption.requestStream.once('error', (err) => req.destroy(err));
+				requestOption.requestStream.pipe(req);
+			} else if (options.data) {
 				req.write(options.data);
+				req.end();
+			} else {
+				req.end();
 			}
-
-			req.end();
 		});
 		this.afterExecute();
 	}
