@@ -17,7 +17,10 @@ export class GenericRouter extends AbstractGenericRouter {
 
     public addController(controller: IGenericController, checker?: any): void {
         if (controller) {
-            const handler = controller.getOption()?.handler?.handler || new GenericHandler().handler;
+            const customHandler = controller.getOption()?.handler;
+
+            const handler = customHandler ? customHandler.handler.bind(customHandler) : new GenericHandler().handler;
+
             const serviceParams = controller.getServiceParams();
 
             if (serviceParams) {
