@@ -1,3 +1,10 @@
+## [5.4.1](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/compare/v5.4.0...v5.4.1) (2026-08-20)
+
+
+### Bug Fixes
+
+* handler binding ([2c23d49](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/commit/2c23d495c61c5a15ff49053838b603f161763aba))
+
 # [5.4.0](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/compare/v5.3.0...v5.4.0) (2026-08-19)
 
 
