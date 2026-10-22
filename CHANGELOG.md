@@ -1,3 +1,10 @@
+## [6.0.1](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/compare/v6.0.0...v6.0.1) (2026-10-22)
+
+
+### Bug Fixes
+
+* router and controller ([b58d955](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/commit/b58d955d6d7023361d541600bf931037283ad4da))
+
 # [6.0.0](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/compare/v5.4.1...v6.0.0) (2026-10-22)
 
 
