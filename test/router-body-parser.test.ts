@@ -31,7 +31,7 @@ function application(router: AbstractGenericRouter, mount = '/api') {
 }
 
 describe('Router body parsers', () => {
-    it('keeps parser:false through the real controller fallback', async () => {
+    it('keeps parser:false through the real controller', async () => {
         const params: ServiceParams = { upload: { method: 'POST', path: '/files', parser: false } };
         const actualController = new GenericController({
             getServiceParams: () => params,
@@ -152,9 +152,10 @@ describe('Router body parsers', () => {
                 this.router.use('/models', crud);
             }
         }
-        const app = application(new CrudRouter());
-        expect((await request(app).post('/api/models').send({ name: 'Created' }).expect(200)).body).toEqual({ name: 'Created' });
-        expect((await request(app).patch('/api/models/id').send({ value: false }).expect(200)).body).toEqual({ value: false });
+        const app = new GenericApp();
+        app.addRoute(new CrudRouter().router, 'api');
+        expect((await request(app.getApp()).post('/api/models').send({ name: 'Created' }).expect(200)).body).toEqual({ name: 'Created' });
+        expect((await request(app.getApp()).patch('/api/models/id').send({ value: false }).expect(200)).body).toEqual({ value: false });
     });
 
     it('provides the same selection to subclasses of AbstractGenericRouter', async () => {
@@ -219,7 +220,7 @@ describe('GenericApp integration', () => {
             file: { method: 'POST', path: '/files', parser: false },
             metadata: { method: 'POST', path: '/metadata' },
         }, key => key === 'file' ? upload : (req, res) => res.json(req.body)));
-        generic.addRoute(routes.router);
+        generic.addRoute(routes.router, undefined, { parser: false });
         const content = 'invalid JSON file\n' + 'x'.repeat(150000);
         const file = await request(generic.getApp()).post('/files').type('json').send(content).expect(200);
         expect(file.body.content).toBe(Buffer.from(content).toString('base64'));
@@ -247,7 +248,7 @@ describe('GenericApp integration', () => {
             const result = await request(large.getApp()).post('/metadata').send({ text: 'x'.repeat(100) }).expect(200);
             expect(result.body.body.text).toHaveLength(100);
             const override = new GenericRouter(controller({ metadata: { method: 'POST', path: '/override' } }), { jsonParserOptions: { limit: 256 } });
-            small.addRoute(override.router);
+            small.addRoute(override.router, undefined, { parser: false });
             await request(small.getApp()).post('/override').send({ text: 'x'.repeat(100) }).expect(200);
         } finally { errors.mockRestore(); }
     });

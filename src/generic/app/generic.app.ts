@@ -1,4 +1,5 @@
 import helmet from 'helmet';
+import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
 import * as express from 'express';
 import * as morgan from 'morgan';
@@ -20,13 +21,14 @@ import {
 } from '../../index';
 import { GenericLogger, ILogger } from '../logger';
 import { OpenApiRegistry, OpenApiRouteRegistration, OpenApiService } from '../openapi';
-import { APP_JSON_PARSER_OPTIONS } from '../router/body-parser';
+import { APP_JSON_PARSER_OPTIONS, RouteRegistrationOptions } from '../router/body-parser';
 
 // Class to create an Express Server from CRUD router and optional port
 export class GenericApp extends AbstractGenericApp {
     protected router?: IGenericRouter;
     protected genericLogger: ILogger;
     protected genericMetricRegister: IMetricRegistry;
+    private readonly parserRoutes = express.Router();
 
     public openApiRegistry!: OpenApiRegistry;
 
@@ -35,7 +37,6 @@ export class GenericApp extends AbstractGenericApp {
         public health?: IHealth,
         public option?: {
             limit?: string | number | undefined;
-            /** @deprecated Configure a urlencoded parser on the route instead. */
             extended?: boolean;
             logger?: ILogger;
             metricRegister?: IMetricRegistry;
@@ -56,6 +57,7 @@ export class GenericApp extends AbstractGenericApp {
         this.initHealthCheck();
         this.initOpenApi();
         this.initMetrics();
+        this.initBodyParsing();
         this.initRoute();
         this.initError();
     }
@@ -83,7 +85,7 @@ export class GenericApp extends AbstractGenericApp {
             this.app.use(logger());
         }
         this.app.use('/', express.static(path.join(__dirname, '../public')));
-        // Routers select their parser; keep the existing application JSON limit.
+        // Keep route-level JSON parsers aligned with the application's limit.
         this.app.set(APP_JSON_PARSER_OPTIONS, { limit: this.option?.limit });
 
         // Morgan to log
@@ -101,6 +103,14 @@ export class GenericApp extends AbstractGenericApp {
         if (this.app.get('CORS')) {
             this.app.use(cors());
         }
+    }
+
+    private initBodyParsing(): void {
+        // Dedicated routers keep their own authentication and error handlers.
+        // Register them once, before defaults can consume their request streams.
+        this.app.use(this.parserRoutes);
+        this.app.use(bodyParser.json({ limit: this.option?.limit }));
+        this.app.use(bodyParser.urlencoded({ limit: this.option?.limit, extended: this.option?.extended ?? false }));
     }
 
     public initRoute(): void {
@@ -182,15 +192,30 @@ export class GenericApp extends AbstractGenericApp {
         this.addRoute(this.router.router, undefined, openApiRoutes);
     }
 
-    public addRoute(router: express.Router, m?: any, openApiRoutes?: readonly OpenApiRouteRegistration[]): void {
+    public addRoute(
+        router: express.Router,
+        m?: any,
+        registration?: readonly OpenApiRouteRegistration[] | RouteRegistrationOptions,
+    ): void {
+        const options: RouteRegistrationOptions = Array.isArray(registration)
+            ? { openApiRoutes: registration }
+            : (registration as RouteRegistrationOptions | undefined) ?? {};
+        const { openApiRoutes } = options;
+        const mount = `/${[this.middleware, m].filter((n) => n && n.length).join('/')}`;
         if (openApiRoutes?.length) {
             this.openApiRegistry.addRoutes(
                 openApiRoutes,
-                `/${[this.middleware, m].filter((n) => n && n.length).join('/')}`,
+                mount,
             );
         }
 
-        this.app.use(`/${[this.middleware, m].filter((n) => n && n.length).join('/')}`, router);
+        if (options.parser === undefined) {
+            this.app.use(mount, router);
+        } else if (options.parser === false) {
+            this.parserRoutes.use(mount, router);
+        } else {
+            this.parserRoutes.use(mount, options.parser, router);
+        }
         this.initError();
     }
 
