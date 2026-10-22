@@ -1,3 +1,21 @@
+# [6.0.0](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/compare/v5.4.1...v6.0.0) (2026-10-22)
+
+
+### Bug Fixes
+
+* package-lock ([3a0a370](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/commit/3a0a370dc0c2f45501793bb280b0ce9fd15d7260))
+
+
+### Features
+
+* upgrade parser management ([cd77245](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/commit/cd77245a9a47d20f5f0ec83cd1dff9751db4e0a0))
+* upgrade parser management ([829ce33](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/commit/829ce33f830c5a50776ea1bb740a72fe56019ca5))
+
+
+### BREAKING CHANGES
+
+* upgrade parser management
+
 ## [5.4.1](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/compare/v5.4.0...v5.4.1) (2026-08-20)
 
 
