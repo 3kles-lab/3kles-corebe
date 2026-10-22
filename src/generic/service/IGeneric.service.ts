@@ -1,6 +1,7 @@
 import { CookieOptions, RequestHandler } from 'express';
 import { HttpMethod } from '../type';
 import { OpenApiOperation } from '../openapi';
+import type { RouteParser } from '../router/body-parser';
 
 interface IGenericService {
     execute(
@@ -78,6 +79,7 @@ interface ServiceParam {
     method: HttpMethod;
     option?: any;
     middlewares?: RequestHandler[];
+    parser?: RouteParser;
     headerKeys?: string[];
     requestType?: RequestType;
     responseType?: ResponseType;

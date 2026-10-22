@@ -2,6 +2,7 @@ import * as express from 'express';
 import { ControllerOption, IGenericService, ServiceResponse } from '../index.generic';
 import { AbstractGenericController } from './abstract.generic.controller';
 import { ExtendableError } from '../../utils/extendable-error';
+import { parsePendingBody } from '../router/body-parser';
 
 export class GenericController extends AbstractGenericController {
     constructor(s?: IGenericService, o?: ControllerOption) {
@@ -26,6 +27,8 @@ export class GenericController extends AbstractGenericController {
 
             req.socket.once('close', abortHandler);
             try {
+                // Inherited CRUD routes may call the controller without parser middleware.
+                await parsePendingBody(req, res);
                 this.updateParamFromRequest(type, req);
 
                 if (this.option?.validation) {

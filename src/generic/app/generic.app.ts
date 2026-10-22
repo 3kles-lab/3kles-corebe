@@ -1,4 +1,3 @@
-import * as bodyParser from 'body-parser';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import * as express from 'express';
@@ -8,7 +7,6 @@ import * as cors from 'cors';
 import logger from 'pino-http';
 import { AbstractGenericApp } from './abstract.generic.app';
 import {
-    AbstractGenericRouter,
     ExtendableError,
     GenericController,
     GenericHealth,
@@ -22,6 +20,7 @@ import {
 } from '../../index';
 import { GenericLogger, ILogger } from '../logger';
 import { OpenApiRegistry, OpenApiRouteRegistration, OpenApiService } from '../openapi';
+import { APP_JSON_PARSER_OPTIONS } from '../router/body-parser';
 
 // Class to create an Express Server from CRUD router and optional port
 export class GenericApp extends AbstractGenericApp {
@@ -36,6 +35,7 @@ export class GenericApp extends AbstractGenericApp {
         public health?: IHealth,
         public option?: {
             limit?: string | number | undefined;
+            /** @deprecated Configure a urlencoded parser on the route instead. */
             extended?: boolean;
             logger?: ILogger;
             metricRegister?: IMetricRegistry;
@@ -82,10 +82,9 @@ export class GenericApp extends AbstractGenericApp {
         if (this.app.get('PINO')) {
             this.app.use(logger());
         }
-        // Use bodyparser to help to communicate with json
         this.app.use('/', express.static(path.join(__dirname, '../public')));
-        this.app.use(bodyParser.json({ limit: this.option?.limit }));
-        this.app.use(bodyParser.urlencoded({ limit: this.option?.limit, extended: this.option?.extended || false }));
+        // Routers select their parser; keep the existing application JSON limit.
+        this.app.set(APP_JSON_PARSER_OPTIONS, { limit: this.option?.limit });
 
         // Morgan to log
         if (this.app.get('LOG')) {
@@ -195,7 +194,7 @@ export class GenericApp extends AbstractGenericApp {
         this.initError();
     }
 
-    public getRouter(): AbstractGenericRouter | undefined {
+    public getRouter(): IGenericRouter | undefined {
         return this.router;
     }
 
