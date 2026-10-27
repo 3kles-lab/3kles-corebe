@@ -1,3 +1,10 @@
+# [6.1.0](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/compare/v6.0.1...v6.1.0) (2026-10-27)
+
+
+### Features
+
+* refactoring in parser ([c7c7a1e](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/commit/c7c7a1e7ac6d6d424f4924df99506d8cbc5f3040))
+
 ## [6.0.1](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/compare/v6.0.0...v6.0.1) (2026-10-22)
 
 
