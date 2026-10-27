@@ -1,3 +1,10 @@
+## [6.1.1](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/compare/v6.1.0...v6.1.1) (2026-10-27)
+
+
+### Bug Fixes
+
+* input body parser ([474862c](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/commit/474862c837813a4b4519f3386ff3059a09501431))
+
 # [6.1.0](http://gitlab.3kles.local/3kles/lib/corejs/3kles-corebe/compare/v6.0.1...v6.1.0) (2026-10-27)
 
 
