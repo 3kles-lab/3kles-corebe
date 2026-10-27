@@ -12,7 +12,7 @@ export class SecureRouter extends AbstractSecureRouter {
 
 			if(serviceParams){
 				for (const key of Object.keys(serviceParams)) {
-					const middlewares = [this.getParserMiddleware(serviceParams[key].parser), ...(serviceParams[key].middlewares || [])];
+					const middlewares = serviceParams[key].middlewares || [];
 					let route = (serviceParams[key].path) ? serviceParams[key].path : key;
 					route = (route.startsWith("/") ? "" : "/") + route;
 					if (serviceParams[key].method) {
@@ -37,7 +37,7 @@ export class SecureRouter extends AbstractSecureRouter {
 								break;
 						}
 					} else {
-						this.router.route(route).get(...middlewares, controller.execute(key), handler);
+						this.router.route('/' + route).get(...middlewares, controller.execute(key), handler);
 					}
 				}
 			}

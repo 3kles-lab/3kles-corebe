@@ -1,14 +1,14 @@
 import { AbstractGenericRouter } from './index.generic.router';
 import { IGenericController } from '../controller/index.generic.controller';
 import { GenericHandler } from '../handler/generic.handler';
-import { GenericRouterOptions } from './body-parser';
+import { RouterOptions } from 'express';
 import { OpenApiRouteRegistration } from '../openapi';
 
 // Class to create a router from a GenericController
 export class GenericRouter extends AbstractGenericRouter {
     public openApiRoutes: OpenApiRouteRegistration[] = [];
 
-    constructor(controller?: IGenericController, options?: GenericRouterOptions) {
+    constructor(controller?: IGenericController, options?: RouterOptions) {
         super(options);
         if (controller) {
             this.addController(controller);
@@ -26,7 +26,7 @@ export class GenericRouter extends AbstractGenericRouter {
             if (serviceParams) {
                 for (const key of Object.keys(serviceParams)) {
                     const definition = serviceParams[key];
-                    const middlewares = [this.getParserMiddleware(definition.parser), ...(definition.middlewares || [])];
+                    const middlewares = definition.middlewares || [];
                     const route = this.normalizeRoute(definition.path ?? key);
 
                     const method = definition.method ?? 'GET';
@@ -51,12 +51,6 @@ export class GenericRouter extends AbstractGenericRouter {
                             break;
                         case 'SEARCH':
                             this.router.route(route).search(...middlewares, controller.execute(key), handler);
-                            break;
-                        case 'HEAD':
-                            this.router.route(route).head(...middlewares, controller.execute(key), handler);
-                            break;
-                        case 'OPTIONS':
-                            this.router.route(route).options(...middlewares, controller.execute(key), handler);
                             break;
                     }
                 }
