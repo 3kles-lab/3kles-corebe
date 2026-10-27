@@ -3,3 +3,4 @@ export * from './abstract.generic.router';
 export * from './generic.router';
 export * from './abstract.secure.router';
 export * from './secure.router';
+export * from './body-parser';

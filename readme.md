@@ -29,34 +29,35 @@ In this module there is a class **HttpApi** that implement **IGenericApi** to ma
 
 - **addController**:Method to add route from controller
 
-### JSON file uploads
+### Request body parsing
 
-The existing JSON and form parsing behavior is preserved. Existing Express,
-GenericRouter, SecureRouter and MongoDBRouter declarations need no new parser
-middleware. Routers remain native Express routers.
+`GenericApp` does not read request bodies. `GenericRouter` and `SecureRouter`
+parse JSON/form bodies by default, before the matched endpoint's validators and
+controller. Existing service definitions do not need a parser option. The app's
+`limit` and `extended` options remain the defaults.
 
-Register a dedicated upload router before the default body parsers with:
-
-```ts
-app.addRoute(fileRouter, undefined, { parser: false });
-```
-
-This registration preserves the incoming bytes, including `application/json`
-files. It takes priority over ordinary router registrations; its own
-authentication and authorization middleware must be inside the dedicated router.
-Helmet, CORS, logging and metrics still apply.
-
-The third argument also accepts a selected Express parser, replacing the defaults
-for that dedicated router. The existing OpenAPI-array argument remains supported:
+Parsing is configured in the router constructor:
 
 ```ts
-app.addRoute(textRouter, 'text', { parser: express.text({ type: 'application/json' }) });
-app.addRoute(normalRouter, 'metadata', openApiRoutes);
+new GenericRouter(controller); // JSON/form
+new GenericRouter(uploadController, { mergeParams: true, parser: false }); // untouched stream
+new GenericRouter(xmlController, { parser: xmlParser }); // selected middleware
 ```
 
-Parsing is configured for the mounted router, not in ServiceParams. Ordinary
-routers still use the application `limit` and `extended` options. A file proxy
-uses `requestType: 'stream'` as before; that controls forwarding, not body parsing.
+`false` preserves bytes and the original Content-Type, including JSON files; it
+does not change the Content-Type to `application/octet-stream`. `requestType:
+'stream'` still controls outgoing forwarding independently.
+
+Routers are native Express routers. Subclasses declaring manual endpoints use
+`this.bodyParser` before their validation, or mount it on their own path before
+registering those endpoints. CRUD integrations must do this in their router
+library, so services inheriting those integrations remain unchanged.
+
+Plain Express routers and direct app handlers do not inherit framework parsing.
+They can use `createBodyParser()` or their own Express parser explicitly. A mixed
+router must register its streaming endpoints before its default parsing middleware,
+or attach parsers to individual endpoints. Avoid a JSON parser on a parent router
+that also contains raw JSON file uploads: a child cannot restore a consumed stream.
 
 ## Controller
 

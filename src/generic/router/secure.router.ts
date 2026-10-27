@@ -12,7 +12,7 @@ export class SecureRouter extends AbstractSecureRouter {
 
 			if(serviceParams){
 				for (const key of Object.keys(serviceParams)) {
-					const middlewares = serviceParams[key].middlewares || [];
+					const middlewares = [this.bodyParser, ...(serviceParams[key].middlewares || [])];
 					let route = (serviceParams[key].path) ? serviceParams[key].path : key;
 					route = (route.startsWith("/") ? "" : "/") + route;
 					if (serviceParams[key].method) {

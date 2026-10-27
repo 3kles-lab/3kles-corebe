@@ -1,14 +1,14 @@
 import { AbstractGenericRouter } from './index.generic.router';
 import { IGenericController } from '../controller/index.generic.controller';
 import { GenericHandler } from '../handler/generic.handler';
-import { RouterOptions } from 'express';
+import { GenericRouterOptions } from './body-parser';
 import { OpenApiRouteRegistration } from '../openapi';
 
 // Class to create a router from a GenericController
 export class GenericRouter extends AbstractGenericRouter {
     public openApiRoutes: OpenApiRouteRegistration[] = [];
 
-    constructor(controller?: IGenericController, options?: RouterOptions) {
+    constructor(controller?: IGenericController, options?: GenericRouterOptions) {
         super(options);
         if (controller) {
             this.addController(controller);
@@ -26,7 +26,8 @@ export class GenericRouter extends AbstractGenericRouter {
             if (serviceParams) {
                 for (const key of Object.keys(serviceParams)) {
                     const definition = serviceParams[key];
-                    const middlewares = definition.middlewares || [];
+                    // Parse only matched endpoints, before validation. Unmatched routers must not consume uploads.
+                    const middlewares = [this.bodyParser, ...(definition.middlewares || [])];
                     const route = this.normalizeRoute(definition.path ?? key);
 
                     const method = definition.method ?? 'GET';

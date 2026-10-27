@@ -1,4 +1,3 @@
-import * as bodyParser from 'body-parser';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import * as express from 'express';
@@ -8,7 +7,6 @@ import * as cors from 'cors';
 import logger from 'pino-http';
 import { AbstractGenericApp } from './abstract.generic.app';
 import {
-    AbstractGenericRouter,
     ExtendableError,
     GenericController,
     GenericHealth,
@@ -23,18 +21,11 @@ import {
 import { GenericLogger, ILogger } from '../logger';
 import { OpenApiRegistry, OpenApiRouteRegistration, OpenApiService } from '../openapi';
 
-/** Dedicated routers may bypass or replace the default request body parsers. */
-export interface RouteRegistrationOptions {
-    parser?: express.RequestHandler | false;
-    openApiRoutes?: readonly OpenApiRouteRegistration[];
-}
-
 // Class to create an Express Server from CRUD router and optional port
 export class GenericApp extends AbstractGenericApp {
     protected router?: IGenericRouter;
     protected genericLogger: ILogger;
     protected genericMetricRegister: IMetricRegistry;
-    private readonly parserRoutes = express.Router();
 
     public openApiRegistry!: OpenApiRegistry;
 
@@ -83,6 +74,8 @@ export class GenericApp extends AbstractGenericApp {
         this.app.set('SECURE_ROUTE', process.env.SECURE_ROUTE ? process.env.SECURE_ROUTE === 'true' : false);
         this.app.set('CORS', process.env.CORS ? process.env.CORS === 'true' : true);
         this.app.set('PINO', process.env.PINO ? process.env.PINO === 'true' : false);
+        // Configuration only: each router installs its own body parser.
+        this.app.set('bodyParserOptions', { limit: this.option?.limit, extended: this.option?.extended ?? false });
     }
 
     public initModule(): void {
@@ -106,16 +99,6 @@ export class GenericApp extends AbstractGenericApp {
         if (this.app.get('CORS')) {
             this.app.use(cors());
         }
-
-        if (this.genericMetricRegister?.collect) {
-            this.app.use(this.genericMetricRegister.collect());
-        }
-
-        // Common middleware also applies to uploads. Dedicated routers run
-        // before the existing JSON/form parsers can consume their streams.
-        this.app.use(this.parserRoutes);
-        this.app.use(bodyParser.json({ limit: this.option?.limit }));
-        this.app.use(bodyParser.urlencoded({ limit: this.option?.limit, extended: this.option?.extended || false }));
     }
 
     public initRoute(): void {
@@ -181,6 +164,9 @@ export class GenericApp extends AbstractGenericApp {
             ).router,
         );
 
+        if (this.genericMetricRegister?.collect) {
+            this.app.use(this.genericMetricRegister.collect());
+        }
     }
 
     public initError(): void {
@@ -194,34 +180,19 @@ export class GenericApp extends AbstractGenericApp {
         this.addRoute(this.router.router, undefined, openApiRoutes);
     }
 
-    public addRoute(
-        router: express.Router,
-        m?: any,
-        registration?: readonly OpenApiRouteRegistration[] | RouteRegistrationOptions,
-    ): void {
-        const options: RouteRegistrationOptions = Array.isArray(registration)
-            ? { openApiRoutes: registration }
-            : (registration as RouteRegistrationOptions | undefined) ?? {};
-        const { openApiRoutes } = options;
-        const mount = `/${[this.middleware, m].filter((n) => n && n.length).join('/')}`;
+    public addRoute(router: express.Router, m?: any, openApiRoutes?: readonly OpenApiRouteRegistration[]): void {
         if (openApiRoutes?.length) {
             this.openApiRegistry.addRoutes(
                 openApiRoutes,
-                mount,
+                `/${[this.middleware, m].filter((n) => n && n.length).join('/')}`,
             );
         }
 
-        if (options.parser === false) {
-            this.parserRoutes.use(mount, router);
-        } else if (options.parser) {
-            this.parserRoutes.use(mount, options.parser, router);
-        } else {
-            this.app.use(mount, router);
-        }
+        this.app.use(`/${[this.middleware, m].filter((n) => n && n.length).join('/')}`, router);
         this.initError();
     }
 
-    public getRouter(): AbstractGenericRouter | undefined {
+    public getRouter(): IGenericRouter | undefined {
         return this.router;
     }
 

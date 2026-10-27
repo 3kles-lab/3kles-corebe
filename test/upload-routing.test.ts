@@ -23,17 +23,18 @@ const upload: express.RequestHandler = async (req, res, next) => {
     } catch (error) { next(error); }
 };
 
-describe('5.4.1 routing with dedicated upload entry points', () => {
+describe('Router parsing compatibility and raw uploads', () => {
     it.each(['application/json', 'application/xml', 'application/x-ndjson', 'application/octet-stream', 'application/x-www-form-urlencoded'])(
         'preserves %s bytes, even after earlier normal routers', async mime => {
             const app = application();
-            const metadata = express.Router();
-            metadata.post('/metadata', (req, res) => res.json(req.body));
-            app.addRoute(metadata);
-            const files = express.Router({ mergeParams: true });
-            files.post('/files/:id', upload);
-            app.addRoute(files, 'workspaces/:workspaceId', { parser: false });
-            const content = '\ufeff{invalid file\r\n' + 'été\0'.repeat(40000);
+            app.addRoute(new GenericRouter(new GenericController(new EchoService({
+                save: { method: 'POST', path: '/metadata' },
+            }))).router);
+            const files = new GenericRouter(new GenericController(new EchoService({
+                upload: { method: 'POST', path: '/files/:id', middlewares: [upload] },
+            })), { mergeParams: true, parser: false });
+            app.addRoute(files.router, 'workspaces/:workspaceId');
+            const content = '\ufeff{invalid file\r\n' + 'Ã©tÃ©\0'.repeat(40000);
             const result = await request(app.getApp()).post('/api/workspaces/ws/files/file').set('content-type', mime).send(content).expect(201);
             expect(result.body).toEqual({ bytes: Buffer.from(content).toString('base64'), body: null, params: { workspaceId: 'ws', id: 'file' } });
             expect(result.headers['x-content-type-options']).toBe('nosniff');
